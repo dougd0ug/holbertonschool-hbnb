@@ -45,8 +45,8 @@ direction TB
 	    +comment : string
 	    +create_review()
 	    +update_review()
-	    delete_review()
-	    list_review()
+	    +delete_review()
+	    +list_review()
     }
 
     USER --|> PLACE : owns
