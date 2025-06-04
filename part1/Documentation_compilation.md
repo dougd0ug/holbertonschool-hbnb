@@ -96,4 +96,18 @@ lien
 
 ## **4. Sequence Diagrams**
 
+### User creation
+
 ![User Creation Sequence Diagram](https://1drv.ms/i/c/38d5dae183484409/EXhuoazAsmtFtCgseqoYxZEBs009yR5azT2WspJTfoMHOg?e=RdcDkq)
+
+### Place creation
+
+![Place Creation Sequence Diagram](https://1drv.ms/i/c/38d5dae183484409/EW0at9-yTg9Gqnn9qnJYOaIBw14xcIXVpcSIxKCQBW0LRg?e=4eVLzC)
+
+### Review submission
+
+![Review Submission Sequence Diagram](https://1drv.ms/i/c/38d5dae183484409/ETuEB1VQmw1Dk2QCVTXMsLIB9R41WcI1tj2HQdCyfTJcCg?e=5dwVQP)
+
+### Places fetching
+
+![Places Fetching Sequence Diagram](https://1drv.ms/i/c/38d5dae183484409/Eet2rQYd4u1Kjx3mQZcNCZQBHuKUVYqahhgCdU9rJrkKlw?e=R82JQr)
