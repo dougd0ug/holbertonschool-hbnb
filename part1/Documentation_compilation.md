@@ -93,3 +93,7 @@ This section is a presentation of different classes and entities of the project.
 ### **Detailed Class Diagram for Business Logic Layer**
 
 lien
+
+## **4. Sequence Diagrams**
+
+![User Creation Sequence Diagram]("\Images\Diagrammes HBnB\SD_User_Registration.png")
