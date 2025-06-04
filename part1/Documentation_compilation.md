@@ -96,4 +96,4 @@ lien
 
 ## **4. Sequence Diagrams**
 
-![User Creation Sequence Diagram]("\Images\Diagrammes HBnB\SD_User_Registration.png")
+![User Creation Sequence Diagram](https://1drv.ms/i/c/38d5dae183484409/EXhuoazAsmtFtCgseqoYxZEBs009yR5azT2WspJTfoMHOg?e=RdcDkq)
