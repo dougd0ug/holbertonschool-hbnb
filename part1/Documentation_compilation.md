@@ -1,4 +1,4 @@
-# **Documentation compilation
+# **Documentation compilation**
 
 ## **1. Introduction**
 
