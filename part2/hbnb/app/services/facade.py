@@ -1,5 +1,7 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
+from app.models.amenity import Amenity
+from app.models.review import Review
 
 
 class HBnBFacade:
@@ -20,6 +22,12 @@ class HBnBFacade:
     
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
+    
+    def put_user(self, user_id, user_data):
+        self.user_repo.get(user_id)
+        self.user_repo.user_data = user_data
+        return self.user_repo.get(user_id)
+
 
     # Placeholder method for fetching a place by ID
     def get_place(self, place_id):
@@ -27,12 +35,12 @@ class HBnBFacade:
         pass
 
     def create_amenity(self, amenity_data):
-    # Placeholder for logic to create an amenity
-        pass
+        amenity = Amenity(**amenity_data)
+        self.amenity_repo.add(amenity)
+        return amenity
 
     def get_amenity(self, amenity_id):
-    # Placeholder for logic to retrieve an amenity by ID
-        pass
+        return self.amenity_repo.get(amenity_id)
 
     def get_all_amenities(self):
     # Placeholder for logic to retrieve all amenities
@@ -43,12 +51,13 @@ class HBnBFacade:
         pass
 
     def create_review(self, review_data):
-    # Placeholder for logic to create a review, including validation for user_id, place_id, and rating
-        pass
+        review = Review(**review_data)
+        self.review_repo.add(review)
+        return review
+
 
     def get_review(self, review_id):
-    # Placeholder for logic to retrieve a review by ID
-        pass
+        return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
     # Placeholder for logic to retrieve all reviews
