@@ -50,10 +50,8 @@ class UserList(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
-    def get_all_users(self):
-        users = self.user_repo.get_all()
-        user_data = api.payload
-
+    def get(self):
+        users = facade.get_all_users()
         return [user.to_dict() for user in users], 200
 
 @api.route('/<user_id>')

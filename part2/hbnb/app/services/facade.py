@@ -24,6 +24,9 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
     
+    def get_all_users(self):
+        return self.user_repo.get_all()
+    
     def put_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
         for key, value in user_data.items():
