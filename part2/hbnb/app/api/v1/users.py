@@ -48,9 +48,7 @@ class UserList(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
-    def get(self):
-        users = self.user_repo.get_all()
-        return [user.to_dict() for user in users], 200
+    
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -62,3 +60,7 @@ class UserResource(Resource):
         if not user:
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+
+    def get(self):
+        users = self.user_repo.get_all()
+        return [user.to_dict() for user in users], 200
