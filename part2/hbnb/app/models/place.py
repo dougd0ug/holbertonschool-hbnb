@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
-from app.models.user import BaseModel, User
-from app.persistence.repository import InMemoryRepository
+from app.models.user import BaseModel
 
 
 class Place(BaseModel):
@@ -33,9 +32,6 @@ class Place(BaseModel):
         else:
             raise ValueError("Latitude must be between -180.0 and 180.0.")
 
-        owner = user_repository.get(owner_id)
-        if not isinstance(owner, User):
-            raise ValueError("User doesn't exist.")
         self.owner = owner
         self.reviews = []
         self.amenities = []
