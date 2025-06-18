@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from user import BaseModel
+from app.models.user import BaseModel
 
 class Amenity(BaseModel):
     def __init__(self, name):

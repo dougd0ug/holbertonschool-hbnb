@@ -16,6 +16,7 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @api.response(404, 'User not found')
     def post(self):
         """Register a new user"""
         user_data = api.payload
@@ -36,7 +37,7 @@ class UserList(Resource):
         existing_user = facade.get_user_by_email(user_data['email'])
 
         if not existing_user:
-            return {'error': 'Not an existing account'}, 404
+            return {'error': 'User not found'}, 404
         
         updated_user = facade.put_user
 
