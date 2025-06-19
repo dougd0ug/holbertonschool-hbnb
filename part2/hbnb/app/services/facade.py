@@ -27,7 +27,7 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
     
-    def put_user(self, user_id, user_data):
+    def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
         for key, value in user_data.items():
             setattr(user, key, value)

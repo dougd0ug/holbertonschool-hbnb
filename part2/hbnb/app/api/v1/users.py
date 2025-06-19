@@ -64,5 +64,5 @@ class UserResource(Resource):
         if not existing_user:
             return {'error': 'User not found'}, 404
         
-        updated_user = facade.put_user
+        updated_user = facade.update_user
         return updated_user
