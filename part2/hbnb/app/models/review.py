@@ -34,3 +34,9 @@ class Review(BaseModel):
 
     def list_review(self):
         pass
+
+    def to_dict(self):
+            return {
+            "id": self.id,
+            "name": self.name,
+            }
