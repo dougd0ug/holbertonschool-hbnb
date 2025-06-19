@@ -30,9 +30,9 @@ class HBnBFacade:
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
         for key, value in user_data.items():
-            setattr(user, key, value)
-        self.user_repo.update(user)
-        return self.user_repo.get(user_id)
+            if hasattr(user, key):
+                setattr(user, key, value)
+        return user
 
 
     def create_place(self, place_data):

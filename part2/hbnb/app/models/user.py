@@ -45,13 +45,6 @@ class User(BaseModel):
             raise TypeError("You must be either a user or an admin.")
         self.places = []
 
-        def to_dict(self):
-            return {
-            "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "email": self.email
-            }
 
     @staticmethod
     def valid_email(email):
@@ -66,3 +59,11 @@ class User(BaseModel):
 
     def delete_user(self):
         pass
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email
+        }

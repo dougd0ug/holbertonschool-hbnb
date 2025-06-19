@@ -56,13 +56,6 @@ class UserResource(Resource):
 
     def put(self, user_id):
         """Updates user details"""
-        user = facade.get_user(user_id)
         user_data = api.payload
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
-        existing_user = facade.get_user_by_email(user_data['email'])
-
-        if not existing_user:
-            return {'error': 'User not found'}, 404
-        
-        updated_user = facade.update_user
-        return updated_user
+        updated_user = facade.update_user(user_id, user_data)
+        return updated_user, 200
