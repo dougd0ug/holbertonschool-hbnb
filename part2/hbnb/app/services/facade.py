@@ -29,6 +29,9 @@ class HBnBFacade:
     
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
+        if not user:
+            return None
+
         for key, value in user_data.items():
             if hasattr(user, key):
                 setattr(user, key, value)
