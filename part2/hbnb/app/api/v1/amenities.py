@@ -45,9 +45,5 @@ class AmenityResource(Resource):
         """Update an amenity's information"""
         amenity = facade.get_amenity(amenity_id)
         user_data = api.payload
-
-        if not amenity:
-            return {'error': 'Amenity not found'}, 404
-        
         updated_amenity = facade.update_amenity
         return updated_amenity

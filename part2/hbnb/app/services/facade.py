@@ -71,7 +71,7 @@ class HBnBFacade:
         for key, value in amenity_data.items():
             setattr(amenity, key, value)
         self.amenity_repo.update(amenity)
-        return self.user_repo.get(amenity_id)
+        return amenity
 
 
     def create_review(self, review_data):

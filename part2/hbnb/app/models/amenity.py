@@ -19,12 +19,6 @@ class Amenity(BaseModel):
     def list_amenity(self):
         pass
 
-    def to_dict(self):
-            return {
-            "id": self.id,
-            "name": self.name,
-            }
-
     @staticmethod
     def part_of_place(self, place):
         self.places.append(place)
@@ -34,3 +28,9 @@ class Amenity(BaseModel):
 
     def delete_amenity(self):
         pass
+
+    def to_dict(self):
+            return {
+            "id": self.id,
+            "name": self.name,
+            }
