@@ -41,7 +41,7 @@ class UserList(Resource):
 
     def get(self):
         users = facade.get_all_users()
-        return users, 200
+        return [user.to_dict() for user in users], 200
 
 @api.route('/<user_id>')
 class UserResource(Resource):
