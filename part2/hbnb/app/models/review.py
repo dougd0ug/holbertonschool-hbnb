@@ -6,7 +6,7 @@ from app.models.user import BaseModel
 class Review(BaseModel):
     def __init__(self, text, rating, place_id, user_id):
         super().__init__()
-        if isinstance(text, str):
+        if text and isinstance(text, str):
             self.text = text
         else:
             raise TypeError("The content of the review must be a string.")
