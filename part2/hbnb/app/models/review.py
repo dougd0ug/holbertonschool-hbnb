@@ -18,12 +18,9 @@ class Review(BaseModel):
 
         self.place = place
         self.user = user
-
-    def create_review(self):
-        pass
-
-    def delete_review(self):
-        pass
-
-    def list_review(self):
-        pass
+    @staticmethod
+    def to_dict(self):
+        return {
+        "id": self.id,
+        "name": self.name,
+        }

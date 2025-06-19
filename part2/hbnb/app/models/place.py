@@ -44,15 +44,6 @@ class Place(BaseModel):
         """Add an amenity to the place."""
         self.amenities.append(amenity)
 
-    def create_place(self):
-        pass
-
-    def delete_place(self):
-        pass
-
-    def list_place(self):
-        pass
-
     def to_dict(self):
         return {
             'id': self.id,
