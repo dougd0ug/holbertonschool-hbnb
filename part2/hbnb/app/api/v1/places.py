@@ -82,28 +82,9 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
         """Update a place's information"""
-        place = facade.get_place(place_id)
-        if not place:
-            return {'error': 'Place does not exist'}, 404
-        user_data = api.payload
-        owner_id = user_data.get('owner_id')
-        owner = facade.get_user(owner_id)
-        if not owner:
-            return {'error': 'Owner does not exist'}, 400
-
-        amenity_ids = user_data.get('amenities', [])
-        for amenity_id in amenity_ids:
-            if not facade.get_amenity(amenity_id):
-                return {'error': f"Amenity {amenity_id} not found"}, 400
-
-        updated_place = facade.update_place(place_id, user_data)
-        return {
-            'id': updated_place.id,
-            'title': updated_place.title,
-            'description': updated_place.description,
-            'price': updated_place.price,
-            'latitude': updated_place.latitude,
-            'longitude': updated_place.longitude,
-            'owner_id': updated_place.owner_id,
-            'amenities': updated_place.amenities
-        }, 200
+        place_data = api.payload
+        updated_place = facade.update_place(place_id, place_data)
+        if not updated_place:
+            return {'error': 'Review not found'}, 404
+        
+        return updated_place.to_dict(), 200

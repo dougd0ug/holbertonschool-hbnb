@@ -40,6 +40,7 @@ class UserList(Resource):
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
     def get(self):
+        """Get all list users"""
         users = facade.get_all_users()
         return [user.to_dict() for user in users], 200
 
@@ -54,15 +55,12 @@ class UserResource(Resource):
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
+    @api.expect(user_model, validate=True)
     def put(self, user_id):
         """Updates user details"""
-        user = facade.get_user(user_id)
         user_data = api.payload
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
-        existing_user = facade.get_user_by_email(user_data['email'])
-
-        if not existing_user:
-            return {'error': 'User not found'}, 404
+        updated_review = facade.update_user(user_id, user_data)
+        if not updated_review:
+            return None, 404
         
-        updated_user = facade.update_user
-        return updated_user
+        return updated_review.to_dict(), 200

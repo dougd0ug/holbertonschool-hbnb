@@ -48,18 +48,17 @@ class ReviewResource(Resource):
             return {'error': 'Review not found'}, 404
         return review.to_dict(), 200
 
-    @api.expect(review_model)
+    @api.expect(review_model, validate=True)
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
     def put(self, review_id):
         """Update a review's information"""
-        review = facade.get_review(review_id)
-        if not review:
-            return {'error': 'Review not found'}, 404
-
         review_data = api.payload
         updated_review = facade.update_review(review_id, review_data)
+        if not updated_review:
+            return {'error': 'Review not found'}, 404
+        
         return updated_review.to_dict(), 200
 
     @api.response(200, 'Review deleted successfully')

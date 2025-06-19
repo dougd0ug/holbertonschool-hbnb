@@ -29,7 +29,7 @@ class AmenityList(Resource):
         result = [{'id': a.id, 'name': a.name} for a in amenities]
         return result, 200
 
-@api.route('/<string:amenity_id>')
+@api.route('/<amenity_id>')
 class AmenityResource(Resource):
     @api.response(200, 'Amenity details retrieved successfully')
     @api.response(404, 'Amenity not found')
@@ -41,12 +41,14 @@ class AmenityResource(Resource):
         return {'id': amenity.id, 'name': amenity.name}, 200
 
     @api.expect(amenity_model, validate=True)
+    @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
     def put(self, amenity_id):
         """Update an amenity's information"""
-        data = request.get_json()
-        amenity = facade.update_amenity(amenity_id, data)
-        if not amenity:
-            return {'message': 'Amenity not found'}, 404
-        return amenity.to_dict(), 200
+        amenity_data = api.payload
+        updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        if not updated_amenity:
+            return {'error': 'Amenity not found'}, 404
+        
+        return updated_amenity.to_dict(), 200

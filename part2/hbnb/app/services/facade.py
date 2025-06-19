@@ -29,11 +29,13 @@ class HBnBFacade:
     
     def update_user(self, user_id, user_data):
         user = self.user_repo.get(user_id)
-        for key, value in user_data.items():
-            setattr(user, key, value)
-        self.user_repo.update(user)
-        return self.user_repo.get(user_id)
-
+        if not user:
+            return None
+    
+        for key, value, in user_data.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+        return user
 
     def create_place(self, place_data):
         place = Place(**place_data)
@@ -47,7 +49,14 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
-        return self.place_repo.update(place_id, place_data)
+        place = self.place_repo.get(place_id)
+        if not place:
+            return None
+    
+        for key, value, in place_data.items():
+            if hasattr(place, key):
+                setattr(place, key, value)
+        return place
 
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
@@ -67,11 +76,11 @@ class HBnBFacade:
         amenity = self.amenity_repo.get(amenity_id)
         if not amenity:
             return None
-
-        for key, value in amenity_data.items():
-            setattr(amenity, key, value)
-        self.amenity_repo.update(amenity)
-        return self.user_repo.get(amenity_id)
+    
+        for key, value, in amenity_data.items():
+            if hasattr(amenity, key):
+                setattr(amenity, key, value)
+        return amenity
 
 
     def create_review(self, review_data):
@@ -90,14 +99,14 @@ class HBnBFacade:
         return [review for review in all_reviews if review.place_id == place_id]
 
     def update_review(self, review_id, review_data):
-    # Placeholder for logic to update a review
         review = self.review_repo.get(review_id)
         if not review:
             return None
 
-        # Appelle update avec l'ID et les données mises à jour
-        updated_review = self.review_repo.update(review_id, review_data)
-        return updated_review
+        for key, value, in review_data.items():
+            if hasattr(review, key):
+                setattr(review, key, value)
+        return review
 
     def delete_review(self, review_id):
         review = self.review_repo.get(review_id)
