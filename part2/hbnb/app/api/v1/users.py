@@ -40,6 +40,7 @@ class UserList(Resource):
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
     def get(self):
+        """Get all list users"""
         users = facade.get_all_users()
         return [user.to_dict() for user in users], 200
 
@@ -58,8 +59,8 @@ class UserResource(Resource):
     def put(self, user_id):
         """Updates user details"""
         user_data = api.payload
-        updated_user = facade.update_user(user_id, user_data)
-        if not updated_user:
+        updated_review = facade.update_user(user_id, user_data)
+        if not updated_review:
             return None, 404
         
-        return updated_user.to_dict(), 200
+        return updated_review.to_dict(), 200

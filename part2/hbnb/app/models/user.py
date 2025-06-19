@@ -45,7 +45,6 @@ class User(BaseModel):
             raise TypeError("You must be either a user or an admin.")
         self.places = []
 
-
     @staticmethod
     def valid_email(email):
         pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
@@ -62,8 +61,8 @@ class User(BaseModel):
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "email": self.email
+        "id": self.id,
+        "first_name": self.first_name,
+        "last_name": self.last_name,
+        "email": self.email
         }

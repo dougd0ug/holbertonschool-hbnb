@@ -4,7 +4,7 @@ from app.models.user import BaseModel
 
 
 class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner):
+    def __init__(self, title, description, price, latitude, longitude, owner_id, amenities):
         super().__init__()
 
         if len(title) <= 100 and isinstance(title, str):
@@ -17,24 +17,24 @@ class Place(BaseModel):
         else:
             raise TypeError("Description must be a string.")
 
-        if price > 0 and isinstance(price, float):
+        if price > 0 and isinstance(price, (int, float)):
             self.price = price
         else:
             raise ValueError("Price must be over 0.")
 
-        if isinstance(latitude, float) and latitude >= -90.0 and latitude <= 90.0:
+        if isinstance(latitude, (int, float)) and latitude >= -90.0 and latitude <= 90.0:
             self.latitude = latitude
         else:
             raise ValueError("Latitude must be between -90.0 and 90.0.")
 
-        if isinstance(longitude, float) and longitude >= -180.0 and longitude <= 180.0:
+        if isinstance(longitude, (int, float)) and longitude >= -180.0 and longitude <= 180.0:
             self.longitude = longitude
         else:
             raise ValueError("Latitude must be between -180.0 and 180.0.")
 
-        self.owner = owner
+        self.owner_id = owner_id
         self.reviews = []
-        self.amenities = []
+        self.amenities = amenities
 
     def add_review(self, review):
         """Add a review to the place."""
@@ -44,11 +44,15 @@ class Place(BaseModel):
         """Add an amenity to the place."""
         self.amenities.append(amenity)
 
-    def create_place(self):
-        pass
-
-    def delete_place(self):
-        pass
-
-    def list_place(self):
-        pass
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'price': self.price,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'owner_id': self.owner_id,
+            'amenities': self.amenities,
+            'created_at': self.created_at.isoformat() if hasattr(self, 'created_at') else None,
+        }
