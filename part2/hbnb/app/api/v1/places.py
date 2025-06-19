@@ -45,34 +45,13 @@ class PlaceList(Resource):
                 return {'error': 'Amenity not found'}, 400
 
         new_place = facade.create_place(user_data)
-        return {
-            'id': new_place.id,
-            'title': new_place.title,
-            'description': new_place.description,
-            'price': new_place.price,
-            'latitude': new_place.latitude,
-            'longitude': new_place.longitude,
-            'owner_id': owner_id,
-            'amenities': new_place.amenities
-            }, 201
+        return new_place.to_dict(), 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
         """Retrieve a list of all places"""
         all_places = facade.get_all_places()
-        return [
-            {
-            'id': place.id,
-            'title': place.title,
-            'description': place.description,
-            'price': place.price,
-            'latitude': place.latitude,
-            'longitude': place.longitude,
-            'owner_id': place.owner_id,
-            'amenities': place.amenities
-            }
-            for place in all_places
-        ], 200
+        return [place.to_dict() for place in all_places], 200
 
 
 

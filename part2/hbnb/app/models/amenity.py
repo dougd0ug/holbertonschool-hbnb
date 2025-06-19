@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from user import BaseModel
+from app.models.user import BaseModel
 
 class Amenity(BaseModel):
     def __init__(self, name):
@@ -17,4 +17,20 @@ class Amenity(BaseModel):
         pass
 
     def list_amenity(self):
+        pass
+
+    def to_dict(self):
+            return {
+            "id": self.id,
+            "name": self.name,
+            }
+
+    @staticmethod
+    def part_of_place(self, place):
+        self.places.append(place)
+
+    def register_amenity(self):
+        pass
+
+    def delete_amenity(self):
         pass
