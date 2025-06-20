@@ -23,26 +23,22 @@ class BaseModel:
 class User(BaseModel):
     def __init__(self, first_name, last_name, email, is_admin=False):
         super().__init__()
+        
+        if not first_name or not isinstance(first_name, str) or len(first_name) > 50:
+            raise ValueError("First name must be a non-empty string with 50 characters maximum.")
+        self.first_name = first_name
 
-        if len(first_name) <= 50 and isinstance(first_name, str):
-            self.first_name = first_name
-        else:
-            raise ValueError("Your first name must be a string and have 50 characters maximum.")
+        if not last_name or not isinstance(last_name, str) or len(last_name) > 50:
+            raise ValueError("Last name must be a non-empty string with 50 characters maximum.")
+        self.last_name = last_name
 
-        if len(last_name) <= 50 and isinstance(last_name, str):
-            self.last_name = last_name
-        else:
-            raise ValueError("Your last name must be a string and have 50 characters maximum.")
+        if not email or not self.valid_email(email):
+            raise ValueError("Email address is not valid.")
+        self.email = email
 
-        if self.valid_email(email):
-            self.email = email
-        else:
-            raise ValueError("Mail adress is not valid.")
-
-        if isinstance(is_admin, bool):
-            self.is_admin = is_admin
-        else:
-            raise TypeError("You must be either a user or an admin.")
+        if not isinstance(is_admin, bool):
+            raise TypeError("is_admin must be a boolean.")
+        self.is_admin = is_admin
         self.places = []
 
     @staticmethod

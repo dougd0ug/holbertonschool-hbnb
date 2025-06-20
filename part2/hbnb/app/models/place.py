@@ -7,27 +7,27 @@ class Place(BaseModel):
     def __init__(self, title, description, price, latitude, longitude, owner_id, amenities):
         super().__init__()
 
-        if len(title) <= 100 and isinstance(title, str):
+        if title and len(title) <= 100 and isinstance(title, str):
             self.title = title
         else:
             raise ValueError("Title must be a string with 100 characters maximum.")
 
-        if isinstance(description, str):
+        if description and isinstance(description, str):
             self.description = description
         else:
             raise TypeError("Description must be a string.")
 
-        if price > 0 and isinstance(price, (int, float)):
+        if price and price > 0 and isinstance(price, (int, float)):
             self.price = price
         else:
             raise ValueError("Price must be over 0.")
 
-        if isinstance(latitude, (int, float)) and latitude >= -90.0 and latitude <= 90.0:
+        if latitude and isinstance(latitude, (int, float)) and latitude >= -90.0 and latitude <= 90.0:
             self.latitude = latitude
         else:
             raise ValueError("Latitude must be between -90.0 and 90.0.")
 
-        if isinstance(longitude, (int, float)) and longitude >= -180.0 and longitude <= 180.0:
+        if longitude and isinstance(longitude, (int, float)) and longitude >= -180.0 and longitude <= 180.0:
             self.longitude = longitude
         else:
             raise ValueError("Latitude must be between -180.0 and 180.0.")

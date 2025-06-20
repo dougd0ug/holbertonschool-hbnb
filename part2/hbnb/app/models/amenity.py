@@ -5,7 +5,7 @@ from app.models.user import BaseModel
 class Amenity(BaseModel):
     def __init__(self, name):
         super().__init__()
-        if isinstance(name, str):
+        if name and isinstance(name, str):
             self.name = name
         else:
             raise TypeError("Name must be a string.")
