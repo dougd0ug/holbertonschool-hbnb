@@ -82,7 +82,6 @@ python -m app.api.v1.test
 
 Similar endpoints exist for places, amenities, and reviews.
 
-
 ## Conclusion
 
 This project is for educational purposes.
