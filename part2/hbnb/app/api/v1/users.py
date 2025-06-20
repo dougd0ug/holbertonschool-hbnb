@@ -21,13 +21,20 @@ class UserList(Resource):
         """Register a new user"""
         user_data = api.payload
 
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
+
         if existing_user:
             return {'error': 'Email already registered'}, 400
 
-        new_user = facade.create_user(user_data)
-        return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
+        try:
+            new_user = facade.create_user(user_data)
+        except Exception as e:
+            return {'error': str(e)}, 400
+
+        return {'id': new_user.id, 
+                'first_name': new_user.first_name, 
+                'last_name': new_user.last_name, 
+                'email': new_user.email}, 201
 
 
     def get_by_email(self, user_email):
@@ -37,7 +44,10 @@ class UserList(Resource):
 
         if not user:
             return {'error': 'User not found'}, 404
-        return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+        return {'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email}, 200
 
     def get(self):
         """Get all list users"""
@@ -51,16 +61,29 @@ class UserResource(Resource):
     def get(self, user_id):
         """Get user details by ID"""
         user = facade.get_user(user_id)
+
         if not user:
             return {'error': 'User not found'}, 404
-        return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
+
+        return {'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email}, 200
 
     @api.expect(user_model, validate=True)
+    @api.response(200, 'User successfully updated')
+    @api.response(404, 'User doesnt exist')
+    @api.response(400, 'Invalid input data')
     def put(self, user_id):
         """Updates user details"""
         user_data = api.payload
-        updated_review = facade.update_user(user_id, user_data)
-        if not updated_review:
-            return None, 404
-        
-        return updated_review.to_dict(), 200
+
+        try:
+            updated_user = facade.update_user(user_id, user_data)
+        except Exception as e:
+            return {'error': str(e)}, 400
+
+        if not updated_user:
+            return {'error': 'User not found'}, 404
+
+        return updated_user.to_dict(), 200

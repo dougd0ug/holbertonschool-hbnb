@@ -32,9 +32,7 @@ class HBnBFacade:
         if not user:
             return None
     
-        for key, value, in user_data.items():
-            if hasattr(user, key):
-                setattr(user, key, value)
+        user.update(user_data)
         return user
 
     def create_place(self, place_data):

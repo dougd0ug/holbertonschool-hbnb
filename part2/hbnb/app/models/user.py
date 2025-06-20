@@ -37,7 +37,7 @@ class User(BaseModel):
         self.email = email
 
         if not isinstance(is_admin, bool):
-            raise TypeError("is_admin must be a boolean.")
+            raise TypeError("is_admin must be True or False.")
         self.is_admin = is_admin
         self.places = []
 
@@ -62,3 +62,22 @@ class User(BaseModel):
         "last_name": self.last_name,
         "email": self.email
         }
+
+    def update(self, data):
+        if 'first_name' in data:
+            if not isinstance(data['first_name'], str) or len(data['first_name']) > 50 or not data['first_name']:
+                raise ValueError("First name must be a non-empty string with 50 characters max")
+
+        if 'last_name' in data:
+            if not isinstance(data['last_name'], str) or len(data['last_name']) > 50 or not data['last_name']:
+                raise ValueError("Last name must be a non-empty string with 50 characters max")
+
+        if 'email' in data:
+            if not self.valid_email(data['email']) or not data['email']:
+                raise ValueError("Invalid email format")
+
+        if 'is_admin' in data:
+            if not isinstance(data['is_admin'], bool):
+                raise TypeError("is_admin must be a boolean")
+
+        super().update(data)
