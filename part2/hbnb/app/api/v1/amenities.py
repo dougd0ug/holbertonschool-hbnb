@@ -19,7 +19,12 @@ class AmenityList(Resource):
         data = request.get_json()
         if not data or 'name' not in data:
             return {'message': 'Name is required'}, 400
-        amenity = facade.create_amenity(data)
+
+        try:
+            amenity = facade.create_amenity(data)
+        except Exception:
+            return {'error': 'Invalid input data'}
+
         return {'id': amenity.id, 'name': amenity.name}, 201
 
     @api.response(200, 'List of amenities retrieved successfully')
@@ -36,8 +41,10 @@ class AmenityResource(Resource):
     def get(self, amenity_id):
         """Get amenity details by ID"""
         amenity = facade.get_amenity(amenity_id)
+
         if not amenity:
             return {'message': 'Amenity not found'}, 404
+
         return {'id': amenity.id, 'name': amenity.name}, 200
 
     @api.expect(amenity_model, validate=True)
@@ -47,8 +54,13 @@ class AmenityResource(Resource):
     def put(self, amenity_id):
         """Update an amenity's information"""
         amenity_data = api.payload
-        updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+
+        try:
+            updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        except Exception:
+            return {'error': 'Invalid input data'}
+        
         if not updated_amenity:
             return {'error': 'Amenity not found'}, 404
-        
-        return updated_amenity.to_dict(), 200
+    
+        return {'message': 'Amenity updated successfully'}, 200

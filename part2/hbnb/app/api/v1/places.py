@@ -27,6 +27,7 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
+
 @api.route('/')
 class PlaceList(Resource):
     @api.expect(place_model)
@@ -35,16 +36,22 @@ class PlaceList(Resource):
     def post(self):
         """Register a new place"""
         user_data = api.payload
-        owner_id = user_data.get('owner_id') 
+        owner_id = user_data.get('owner_id')
+
         owner = facade.get_user(owner_id)
         if not owner:
             return {'error': 'Owner does not exist'}, 400
+
         amenity_ids = user_data['amenities']
         for amenity_id in amenity_ids:
             if not facade.get_amenity(amenity_id):
                 return {'error': 'Amenity not found'}, 400
 
-        new_place = facade.create_place(user_data)
+        try:
+            new_place = facade.create_place(user_data)
+        except Exception:
+            return {'error': 'Invalid input data'}, 400
+
         return new_place.to_dict(), 201
 
     @api.response(200, 'List of places retrieved successfully')
@@ -54,7 +61,6 @@ class PlaceList(Resource):
         return [place.to_dict() for place in all_places], 200
 
 
-
 @api.route('/<place_id>')
 class PlaceResource(Resource):
     @api.response(200, 'Place details retrieved successfully')
@@ -62,8 +68,10 @@ class PlaceResource(Resource):
     def get(self, place_id):
         """Get place details by ID"""
         place = facade.get_place(place_id)
+
         if not place:
             return {'error': 'Place does not exist'}, 404
+
         return {
             'id': place.id,
             'title': place.title,
@@ -75,7 +83,6 @@ class PlaceResource(Resource):
             'amenities': place.amenities
             }, 200
 
-
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
@@ -83,8 +90,13 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update a place's information"""
         place_data = api.payload
-        updated_place = facade.update_place(place_id, place_data)
+
+        try:
+            updated_place = facade.update_place(place_id, place_data)
+        except Exception:
+            return {'error': 'Invalid input data'}
+
         if not updated_place:
             return {'error': 'Review not found'}, 404
-        
-        return updated_place.to_dict(), 200
+
+        return {'message': 'Place updated successfully'}, 200
