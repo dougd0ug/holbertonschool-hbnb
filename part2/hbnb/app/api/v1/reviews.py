@@ -32,9 +32,13 @@ class ReviewList(Resource):
 
 
     @api.response(200, 'List of reviews retrieved successfully')
+    @api.response(404, 'List of reviews not found')
     def get(self):
         """Retrieve a list of all reviews"""
         all_reviews = facade.get_all_reviews()
+        if not all_reviews:
+            return {'error': 'List of reviews not found'}, 404
+        
         return [review.to_dict() for review in all_reviews], 200
 
 @api.route('/<review_id>')
@@ -56,6 +60,8 @@ class ReviewResource(Resource):
         """Update a review's information"""
         review_data = api.payload
         updated_review = facade.update_review(review_id, review_data)
+        if not review_id or not review_data:
+            return {'error': 'Invalid input data'}, 400
         if not updated_review:
             return {'error': 'Review not found'}, 404
         

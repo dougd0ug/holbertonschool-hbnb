@@ -56,11 +56,16 @@ class UserResource(Resource):
         return {'id': user.id, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email}, 200
 
     @api.expect(user_model, validate=True)
+    @api.response(200, 'User details retrieved successfully')
+    @api.response(400, 'Invalid input data')
+    @api.response(404, 'User not found')
     def put(self, user_id):
         """Updates user details"""
         user_data = api.payload
         updated_review = facade.update_user(user_id, user_data)
+        if not user_id or not user_data:
+            return {'error': 'Invalid input data'}, 400
         if not updated_review:
-            return None, 404
+            return {'error': 'Review not found'}, 404
         
         return updated_review.to_dict(), 200

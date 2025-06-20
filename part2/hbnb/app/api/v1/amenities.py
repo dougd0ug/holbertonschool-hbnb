@@ -23,9 +23,12 @@ class AmenityList(Resource):
         return {'id': amenity.id, 'name': amenity.name}, 201
 
     @api.response(200, 'List of amenities retrieved successfully')
+    @api.response(404, 'List of amenities not found')
     def get(self):
         """Retrieve a list of all amenities"""
         amenities = facade.get_all_amenities()
+        if not amenities:
+            return {'error': 'List of amenities not found'}, 404
         result = [{'id': a.id, 'name': a.name} for a in amenities]
         return result, 200
 
@@ -48,6 +51,8 @@ class AmenityResource(Resource):
         """Update an amenity's information"""
         amenity_data = api.payload
         updated_amenity = facade.update_amenity(amenity_id, amenity_data)
+        if not amenity_id or not amenity_data:
+            return {'error': 'Invalid input data'}, 400
         if not updated_amenity:
             return {'error': 'Amenity not found'}, 404
         
