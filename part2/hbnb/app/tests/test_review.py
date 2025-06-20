@@ -1,19 +1,20 @@
 import unittest
 from app.models.review import Review
+from app.services import facade
 from datetime import datetime
 
 class TestReview(unittest.TestCase):
 
     def setUp(self):
         self.review = Review(
-            text="Great view and good food!",
+            text="Great place!",
             rating=5,
             place_id="place123",
             user_id="user456"
         )
 
     def test_valid_initialization(self):
-        self.assertEqual(self.review.text, "Great view and good food!")
+        self.assertEqual(self.review.text, "Great place!")
         self.assertEqual(self.review.rating, 5)
         self.assertEqual(self.review.place_id, "place123")
         self.assertEqual(self.review.user_id, "user456")
