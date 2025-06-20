@@ -21,7 +21,6 @@ part2/hbnb/
 │   ├── models/        # Data models (User, Place, Amenity, Review)
 │   ├── persistence/   # Repository and data storage logic
 │   ├── services/      # Business logic and facade
-│   ├── __init__.py
 ├── config.py          # Configuration settings
 ├── requirements.txt   # Python dependencies
 ├── run.py             # Application entry point
@@ -33,7 +32,8 @@ part2/hbnb/
 ### Prerequisites
 
 - Python 3.8+
-- [pip](https://pip.pypa.io/en/stable/)
+- Flask==3.1.1
+- flask-restx==1.3.0
 - (Recommended) [virtualenv](https://virtualenv.pypa.io/en/latest/)
 
 ### Installation
@@ -69,7 +69,7 @@ The API will be available at `http://localhost:5000/`.
 ### Running Tests
 
 ```bash
-python -m unittest discover app/models
+python -m app.api.v1.test
 ```
 
 ## API Endpoints
@@ -82,13 +82,11 @@ python -m unittest discover app/models
 
 Similar endpoints exist for places, amenities, and reviews.
 
-## Contributing
 
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-## License
+## Conclusion
 
 This project is for educational purposes.
+It has been made by Dorine Lemee et Ancelin Chevallier
 
 ---
 
