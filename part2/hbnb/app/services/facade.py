@@ -99,9 +99,7 @@ class HBnBFacade:
         if not review:
             return None
 
-        for key, value, in review_data.items():
-            if hasattr(review, key):
-                setattr(review, key, value)
+        review.update(review_data)
         return review
 
     def delete_review(self, review_id):

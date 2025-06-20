@@ -28,3 +28,13 @@ class Review(BaseModel):
         "place_id": self.place_id,
         "user_id": self.user_id
         }
+
+    def update(self, data):
+        if 'text' in data:
+            if not isinstance(data['text'], str) or not data['text']:
+                raise TypeError("The content of the review must be a string.")
+        if 'rating' in data:
+            if not isinstance(data['rating'], int) or data['rating'] < 1 or data['rating'] > 5:
+                raise ValueError("The rating must be between 1 and 5")
+
+        super().update(data)
