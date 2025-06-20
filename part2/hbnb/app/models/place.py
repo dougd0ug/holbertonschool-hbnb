@@ -56,3 +56,22 @@ class Place(BaseModel):
             'amenities': self.amenities,
             'created_at': self.created_at.isoformat() if hasattr(self, 'created_at') else None,
         }
+
+    def update(self, data):
+        if 'title' in data:
+            if not isinstance(data['title'], str) or not data['title'] or len(data['title']) >= 100:
+                raise ValueError("Title must be a string with 100 characters maximum.")
+        if 'description' in data:
+            if not isinstance(data['description'], str) or not data['description']:
+                raise TypeError("Description must be a string.")
+        if 'price' in data:
+            if not isinstance(data['price'], (int, float)) or not data['price'] or data['price'] < 0:
+                raise ValueError("Price must be over 0.")
+        if 'latitude' in data:
+            if not isinstance(data['latitude'], (int, float)) or not data['latitude'] or data['latitude'] <= -90.0 or data['latitude'] >= 90.0:
+                raise ValueError("Latitude must be between -90.0 and 90.0.")
+        if 'longitude' in data:
+            if not isinstance(data['longitude'], (int, float)) or not data['longitude'] or data['longitude'] <= -180.0 or data['longitude'] >= 180.0:
+                raise ValueError("Latitude must be between -180.0 and 180.0.")
+
+        super().update(data)

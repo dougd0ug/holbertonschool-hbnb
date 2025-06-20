@@ -51,9 +51,7 @@ class HBnBFacade:
         if not place:
             return None
     
-        for key, value, in place_data.items():
-            if hasattr(place, key):
-                setattr(place, key, value)
+        place.update(place_data)
         return place
 
     def create_amenity(self, amenity_data):

@@ -49,8 +49,8 @@ class PlaceList(Resource):
 
         try:
             new_place = facade.create_place(user_data)
-        except Exception:
-            return {'error': 'Invalid input data'}, 400
+        except Exception as e:
+            return {'error': str(e)}, 400
 
         return new_place.to_dict(), 201
 
@@ -93,8 +93,8 @@ class PlaceResource(Resource):
 
         try:
             updated_place = facade.update_place(place_id, place_data)
-        except Exception:
-            return {'error': 'Invalid input data'}
+        except Exception as e:
+            return {'error': str(e)}, 400
 
         if not updated_place:
             return {'error': 'Review not found'}, 404
