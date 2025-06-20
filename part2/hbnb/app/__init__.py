@@ -15,4 +15,3 @@ def create_app():
     api.add_namespace(amenity_ns, path='/api/v1/amenities')
     api.add_namespace(review_ns, path='/api/v1/reviews')
     return app
-    
