@@ -62,10 +62,11 @@ class UserResource(Resource):
     def put(self, user_id):
         """Updates user details"""
         user_data = api.payload
-        updated_review = facade.update_user(user_id, user_data)
+        updated_user = facade.update_user(user_id, user_data)
         if not user_id or not user_data:
             return {'error': 'Invalid input data'}, 400
-        if not updated_review:
-            return {'error': 'Review not found'}, 404
         
-        return updated_review.to_dict(), 200
+        if not updated_user:
+            return {'error': 'User not found'}, 404
+        
+        return updated_user.to_dict(), 200
