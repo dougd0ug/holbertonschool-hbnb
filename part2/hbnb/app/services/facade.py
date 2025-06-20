@@ -75,9 +75,7 @@ class HBnBFacade:
         if not amenity:
             return None
     
-        for key, value, in amenity_data.items():
-            if hasattr(amenity, key):
-                setattr(amenity, key, value)
+        amenity.update(amenity_data)
         return amenity
 
 

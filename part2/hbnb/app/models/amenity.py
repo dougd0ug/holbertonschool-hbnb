@@ -25,3 +25,10 @@ class Amenity(BaseModel):
 
     def delete_amenity(self):
         pass
+
+    def update(self, data):
+        if 'name' in data:
+            if not isinstance('name', str) or not data['name']:
+                raise TypeError("Name must be a string.")
+
+        super().update(data)
