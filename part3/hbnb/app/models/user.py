@@ -1,8 +1,6 @@
 import uuid
 from datetime import datetime
 import re
-from flask_bcrypt import Bcrypt
-
 
 class BaseModel:
     def __init__(self):
@@ -22,7 +20,7 @@ class BaseModel:
         self.save()  # Update the updated_at timestamp
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False, password):
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         super().__init__()
         
         if not first_name or not isinstance(first_name, str) or len(first_name) > 50:
@@ -86,8 +84,10 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
+        from app import bcrypt
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
+        from app import bcrypt
         return bcrypt.check_password_hash(self.password, password)
