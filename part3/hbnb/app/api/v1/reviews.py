@@ -35,13 +35,9 @@ class ReviewList(Resource):
 
 
     @api.response(200, 'List of reviews retrieved successfully')
-    @api.response(404, 'List of reviews not found')
     def get(self):
         """Retrieve a list of all reviews"""
         all_reviews = facade.get_all_reviews()
-        if not all_reviews:
-            return {'error': 'List of reviews not found'}, 404
-        
         return [review.to_dict() for review in all_reviews], 200
 
 @api.route('/<review_id>')

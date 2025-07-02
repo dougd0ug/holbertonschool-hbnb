@@ -55,12 +55,9 @@ class PlaceList(Resource):
         return new_place.to_dict(), 201
 
     @api.response(200, 'List of places retrieved successfully')
-    @api.response(404, 'List of places not found')
     def get(self):
         """Retrieve a list of all places"""
         all_places = facade.get_all_places()
-        if not all_places:
-            return {'error': 'List of places not found'}, 404
         return [place.to_dict() for place in all_places], 200
 
 
