@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 
 
@@ -17,9 +18,11 @@ class ReviewList(Resource):
     @api.expect(review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
         """Register a new review"""
         review_data = api.payload
+        current_user = get_jwt_identity()
         user_id = review_data.get('user_id')
         place_id = review_data.get('place_id')
 
@@ -57,9 +60,11 @@ class ReviewResource(Resource):
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def put(self, review_id):
         """Update a review's information"""
         review_data = api.payload
+        current_user = get_jwt_identity()
 
         try:
             updated_review = facade.update_review(review_id, review_data)
@@ -73,8 +78,10 @@ class ReviewResource(Resource):
 
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
+    @jwt_required()
     def delete(self, review_id):
         """Delete a review"""
+        current_user = get_jwt_identity()
         review = facade.get_review(review_id)
 
         if not review:

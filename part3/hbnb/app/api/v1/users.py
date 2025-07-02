@@ -1,4 +1,5 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
 from app.models.user import User
 
@@ -77,9 +78,11 @@ class UserResource(Resource):
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User doesnt exist')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def put(self, user_id):
         """Updates user details"""
         user_data = api.payload
+        current_user = get_jwt_identity()
 
         try:
             updated_user = facade.update_user(user_id, user_data)
