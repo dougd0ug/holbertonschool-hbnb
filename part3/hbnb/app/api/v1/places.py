@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from app.models.place import Place
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
@@ -44,6 +45,9 @@ class PlaceList(Resource):
         owner = facade.get_user(owner_id)
         if not owner:
             return {'error': 'Owner does not exist'}, 400
+
+        if owner.id != current_user['id']:
+            return {'error': 'Unauthorized action'}, 403
 
         amenity_ids = user_data['amenities']
         for amenity_id in amenity_ids:
@@ -94,7 +98,11 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update a place's information"""
         place_data = api.payload
+        place = facade.get_place(place_id)
         current_user = get_jwt_identity()
+
+        if place.owner_id != current_user['id']:
+            return {'error': 'Unauthorized action'}, 403
 
         try:
             updated_place = facade.update_place(place_id, place_data)
