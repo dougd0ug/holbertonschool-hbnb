@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 import re
+from app import bcrypt
 
 class BaseModel:
     def __init__(self):
@@ -39,7 +40,7 @@ class User(BaseModel):
             raise TypeError("is_admin must be True or False.")
         self.is_admin = is_admin
         self.places = []
-        self.password = password
+        self.hash_password(password)
 
     @staticmethod
     def valid_email(email):
@@ -84,10 +85,8 @@ class User(BaseModel):
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
-        from app import bcrypt
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
         """Verifies if the provided password matches the hashed password."""
-        from app import bcrypt
         return bcrypt.check_password_hash(self.password, password)
