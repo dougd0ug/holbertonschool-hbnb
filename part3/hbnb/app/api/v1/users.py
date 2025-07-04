@@ -32,8 +32,6 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         try:
-            # Hash the password before storing
-            user_data['password'] = hash_password(user_data['password'])
             new_user = facade.create_user(user_data)
         except Exception as e:
             return {'error': str(e)}, 400
