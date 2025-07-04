@@ -1,5 +1,7 @@
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services import facade
+from app.models.user import User
 
 api = Namespace('users', description='User operations')
 
@@ -7,7 +9,8 @@ api = Namespace('users', description='User operations')
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user')
+    'email': fields.String(required=True, description='Email of the user'),
+    'password': fields.String(required=True, description='Password of the user')
 })
 
 @api.route('/')
@@ -17,6 +20,8 @@ class UserList(Resource):
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
     @api.response(404, 'User not found')
+    @api.response(403, 'Invalid password')
+
     def post(self):
         """Register a new user"""
         user_data = api.payload
@@ -27,6 +32,8 @@ class UserList(Resource):
             return {'error': 'Email already registered'}, 400
 
         try:
+            # Hash the password before storing
+            user_data['password'] = hash_password(user_data['password'])
             new_user = facade.create_user(user_data)
         except Exception as e:
             return {'error': str(e)}, 400

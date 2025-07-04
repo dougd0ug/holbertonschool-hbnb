@@ -82,8 +82,8 @@ class User(BaseModel):
         if 'is_admin' in data:
             if not isinstance(data['is_admin'], bool):
                 raise TypeError("is_admin must be a boolean")
-        
-        super().update(data)
+            
+            super().update(data)
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
