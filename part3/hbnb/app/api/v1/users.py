@@ -9,7 +9,8 @@ api = Namespace('users', description='User operations')
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user')
+    'email': fields.String(required=True, description='Email of the user'),
+    'password': fields.String(required=True, description='password of the user')
 })
 
 @api.route('/')
@@ -32,8 +33,6 @@ class UserList(Resource):
             new_user = facade.create_user(user_data)
         except Exception as e:
             return {'error': str(e)}, 400
-        else:
-            new_user.hash_password(user_data['password'])
 
         return {'id': new_user.id, 
                 'first_name': new_user.first_name, 
@@ -83,6 +82,10 @@ class UserResource(Resource):
         """Updates user details"""
         user_data = api.payload
         current_user = get_jwt_identity()
+        user = user_data.get('id')
+
+        if user.id != current_user['id']:
+            return {'error': 'Unauthorized action.'}, 400
 
         try:
             updated_user = facade.update_user(user_id, user_data)

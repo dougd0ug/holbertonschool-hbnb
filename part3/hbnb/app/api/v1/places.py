@@ -25,7 +25,6 @@ place_model = api.model('Place', {
     'price': fields.Float(required=True, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='ID of the owner'),
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
@@ -40,11 +39,12 @@ class PlaceList(Resource):
         """Register a new place"""
         user_data = api.payload
         current_user = get_jwt_identity()
-        owner_id = user_data.get('owner_id')
 
-        owner = facade.get_user(owner_id)
+        owner = facade.get_user(current_user['id'])
         if not owner:
             return {'error': 'Owner does not exist'}, 400
+        
+        user_data['owner_id'] = owner.id 
 
         if owner.id != current_user['id']:
             return {'error': 'Unauthorized action'}, 403
@@ -100,6 +100,9 @@ class PlaceResource(Resource):
         place_data = api.payload
         place = facade.get_place(place_id)
         current_user = get_jwt_identity()
+
+        if not place:
+            return {"error": "Place not found"}, 404
 
         if place.owner_id != current_user['id']:
             return {'error': 'Unauthorized action'}, 403
