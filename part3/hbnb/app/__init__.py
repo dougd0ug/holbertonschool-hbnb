@@ -3,6 +3,8 @@ from flask_restx import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
+from part3.hbnb.app.api.v1 import admin
+
 bcrypt = Bcrypt()
 jwt = JWTManager()
 
@@ -11,6 +13,7 @@ from app.api.v1.places import api as place_ns
 from app.api.v1.amenities import api as amenity_ns
 from app.api.v1.reviews import api as review_ns
 from app.api.v1.auth import api as auth_ns
+from app.api.v1.admin import api as admin_ns
 
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
@@ -24,6 +27,7 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(amenity_ns, path='/api/v1/amenities')
     api.add_namespace(review_ns, path='/api/v1/reviews')
     api.add_namespace(auth_ns, path='/api/v1/auth')
+    api.add_namespace(admin_ns, path='/api/v1/admin')
 
     bcrypt.init_app(app)
     jwt.init_app(app)
