@@ -97,22 +97,19 @@ class PlaceResource(Resource):
     @jwt_required()
     def put(self, place_id):
         """Update a place's information"""
-        place_data = api.payload
         place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+
         current_user = get_jwt_identity()
 
-        if not place:
-            return {"error": "Place not found"}, 404
-
         if place.owner_id != current_user['id']:
-            return {'error': 'Unauthorized action'}, 403
+            return {'error': 'You can only update your own places'}, 403
+
+        data = api.payload
 
         try:
-            updated_place = facade.update_place(place_id, place_data)
+            updated_place = facade.update_place(place_id, data)
+            return updated_place.to_dict(), 200
         except Exception as e:
             return {'error': str(e)}, 400
-
-        if not updated_place:
-            return {'error': 'Review not found'}, 404
-
-        return {'message': 'Place updated successfully'}, 200

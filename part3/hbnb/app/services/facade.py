@@ -1,5 +1,5 @@
 from app.persistence.repository import InMemoryRepository
-from app.models.user import User
+from app.models.user import User, BaseModel
 from app.models.amenity import Amenity
 from app.models.review import Review
 from app.models.place import Place
@@ -52,6 +52,7 @@ class HBnBFacade:
             return None
     
         place.update(place_data)
+        self.save()
         return place
 
     def create_amenity(self, amenity_data):
