@@ -52,7 +52,6 @@ class HBnBFacade:
             return None
     
         place.update(place_data)
-        self.save()
         return place
 
     def create_amenity(self, amenity_data):

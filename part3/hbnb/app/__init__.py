@@ -3,8 +3,6 @@ from flask_restx import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
-from part3.hbnb.app.api.v1 import admin
-
 bcrypt = Bcrypt()
 jwt = JWTManager()
 
