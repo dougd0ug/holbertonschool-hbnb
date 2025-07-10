@@ -2,15 +2,17 @@ import uuid
 from datetime import datetime
 import re
 from flask_bcrypt import Bcrypt
+from app import db
 
 
 bcrypt = Bcrypt()
 
-class BaseModel:
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+class BaseModel(db.Model):
+    __abstract__ = True
+    
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def save(self):
         """Update the updated_at timestamp whenever the object is modified"""
@@ -24,25 +26,15 @@ class BaseModel:
         self.save()  # Update the updated_at timestamp
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password, is_admin=False):
-        super().__init__()
-        
-        if not first_name or not isinstance(first_name, str) or len(first_name) > 50:
-            raise ValueError("First name must be a non-empty string with 50 characters maximum.")
-        self.first_name = first_name
+    __tablename__ = 'users'
 
-        if not last_name or not isinstance(last_name, str) or len(last_name) > 50:
-            raise ValueError("Last name must be a non-empty string with 50 characters maximum.")
-        self.last_name = last_name
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
-        if not email or not self.valid_email(email):
-            raise ValueError("Email address is not valid.")
-        self.email = email
-
-        if not isinstance(is_admin, bool):
-            raise TypeError("is_admin must be True or False.")
-        self.is_admin = is_admin
-        self.places = []
+    self.places = []
 
     @staticmethod
     def valid_email(email):
