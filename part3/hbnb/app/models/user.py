@@ -1,92 +1,48 @@
 import uuid
 from datetime import datetime
 import re
-from app import bcrypt
+from app import bcrypt, db
+from app.models.baseclasse import BaseModel
 
-class BaseModel:
-    def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+class User(db.Model):
+    __tablename__ = 'users'
 
-    def save(self):
-        """Update the updated_at timestamp whenever the object is modified"""
-        self.updated_at = datetime.now()
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
-    def update(self, data):
-        """Update the attributes of the object based on the provided dictionary"""
-        for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        self.save()  # Update the updated_at timestamp
+    def __repr__(self):
+        return f"<User {self.email}>"
 
-class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password, is_admin=False):
-        super().__init__()
-        
-        if not first_name or not isinstance(first_name, str) or len(first_name) > 50:
-            raise ValueError("First name must be a non-empty string with 50 characters maximum.")
-        self.first_name = first_name
+    def hash_password(self, plain_password):
+        self.password = bcrypt.generate_password_hash(plain_password).decode('utf-8')
 
-        if not last_name or not isinstance(last_name, str) or len(last_name) > 50:
-            raise ValueError("Last name must be a non-empty string with 50 characters maximum.")
-        self.last_name = last_name
+    def verify_password(self, plain_password):
+        return bcrypt.check_password_hash(self.password, plain_password)
 
-        if not email or not self.valid_email(email):
-            raise ValueError("Email address is not valid.")
-        self.email = email
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "is_admin": self.is_admin
+        }
 
-        if not isinstance(is_admin, bool):
-            raise TypeError("is_admin must be True or False.")
-        self.is_admin = is_admin
-        self.places = []
-        self.hash_password(password)
+    def validate(self):
+        if not self.first_name or len(self.first_name) > 50:
+            raise ValueError("First name must be a non-empty string with 50 characters max.")
+        if not self.last_name or len(self.last_name) > 50:
+            raise ValueError("Last name must be a non-empty string with 50 characters max.")
+        if not self.valid_email(self.email):
+            raise ValueError("Invalid email format.")
+        if not isinstance(self.is_admin, bool):
+            raise TypeError("is_admin must be a boolean.")
 
     @staticmethod
     def valid_email(email):
         pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
         return re.match(pattern, email) is not None
-
-    def owns_place(self, place):
-        self.places.append(place)
-
-    def register_user(self):
-        pass
-
-    def delete_user(self):
-        pass
-
-    def to_dict(self):
-        return {
-        "id": self.id,
-        "first_name": self.first_name,
-        "last_name": self.last_name,
-        "email": self.email
-        }
-
-    def update(self, data):
-        if 'first_name' in data:
-            if not isinstance(data['first_name'], str) or len(data['first_name']) > 50 or not data['first_name']:
-                raise ValueError("First name must be a non-empty string with 50 characters max")
-
-        if 'last_name' in data:
-            if not isinstance(data['last_name'], str) or len(data['last_name']) > 50 or not data['last_name']:
-                raise ValueError("Last name must be a non-empty string with 50 characters max")
-
-        if 'email' in data:
-            if not self.valid_email(data['email']) or not data['email']:
-                raise ValueError("Invalid email format")
-
-        if 'is_admin' in data:
-            if not isinstance(data['is_admin'], bool):
-                raise TypeError("is_admin must be a boolean")
-
-        super().update(data)
-
-    def hash_password(self, password):
-        """Hashes the password before storing it."""
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-    def verify_password(self, password):
-        """Verifies if the provided password matches the hashed password."""
-        return bcrypt.check_password_hash(self.password, password)
