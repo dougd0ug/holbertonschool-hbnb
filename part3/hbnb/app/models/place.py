@@ -1,11 +1,20 @@
 import uuid
 from datetime import datetime
 from app.models.user import BaseModel
+from app import db, bcrypt
+
 
 
 class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner_id, amenities):
-        super().__init__()
+    __tablename__ = 'places'
+
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String, nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    latitude = 
+    longitude = 
+    owner_id = 
+    amenities = 
 
         if title and len(title) <= 100 and isinstance(title, str):
             self.title = title
