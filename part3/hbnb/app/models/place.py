@@ -3,35 +3,32 @@ from datetime import datetime
 from app.models.user import BaseModel
 from app import db
 from sqlalchemy.orm import relationship, validates
-from sqlalchemy import Column, String, Float, DECIMAL, ForeignKey, Text, Table
+from sqlalchemy import Column, String, Float, DECIMAL, ForeignKey, Text, Table, Integer
 from app.persistence.base import Base
+from sqlalchemy.orm import mapped_column
 
 
-place_amenity_association = Table(
-    'place_amenity',
-    Base.metadata,
-    Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
-    Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
+place_amenity = db.Table(
+    "place_amenity",
+    Column('place_id', String(36), ForeignKey('places.id'), primary_key=True),
+    Column('amenity_id', String(36), ForeignKey('amenities.id'), primary_key=True),
 )
-
 
 class Place(BaseModel, Base):
     __tablename__ = 'places'
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-
-    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     owner = relationship("User", back_populates="places")
 
-    reviews = relationship("Review", back_populates="place", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="place", lazy=True)
 
-    amenities = relationship("Amenity", secondary=place_amenity_association, back_populates="places")       
+    amenities = relationship("Amenity", secondary=place_amenity, back_populates="places", lazy=True)
 
     @validates("title")
     def validate_title(self, key, title):

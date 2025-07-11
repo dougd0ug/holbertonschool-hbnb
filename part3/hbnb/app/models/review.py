@@ -9,15 +9,13 @@ from app.persistence.base import Base
 class Review(BaseModel, Base):
     __tablename__ = 'reviews'
 
-    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-
-    place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
     place = relationship("Place", back_populates="reviews")
-    author = relationship("User", back_populates="reviews")
+    user = relationship("User", back_populates="reviews")
 
     def to_dict(self):
         return {

@@ -11,16 +11,15 @@ from app.persistence.base import Base
 class User(BaseModel, Base):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False, unique=True)
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=True)
 
-    places = relationship("Place", back_populates="owner", cascade="all, delete-orphan")
+    places = relationship("Place", back_populates="owner", lazy=True)
 
-    reviews = relationship("Review", back_populates="author", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="user", lazy=True)
 
     def __repr__(self):
         return f"<User {self.email}>"

@@ -3,18 +3,17 @@ from datetime import datetime
 from app.models.user import BaseModel
 from app import db
 from sqlalchemy.orm import relationship, validates
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, true
 from app.persistence.base import Base
-from app.models.place import place_amenity_association
+from app.models.place import place_amenity
 
 
 class Amenity(BaseModel, Base):
     __tablename__ = 'amenities'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False, unique=True)
 
-    places = relationship("Place", secondary=place_amenity_association, back_populates="amenities")
+    places = relationship("Place", secondary=place_amenity, back_populates="amenities", lazy=True)
 
     def to_dict(self):
             return {
