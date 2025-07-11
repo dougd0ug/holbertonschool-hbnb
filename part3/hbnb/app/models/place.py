@@ -3,7 +3,13 @@ from datetime import datetime
 from app.models.user import BaseModel
 from app import db, bcrypt
 from sqlalchemy.orm import relationship, validates
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, ForeignKey
+
+place_amenities = db.Table('place_amenities',
+    db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
+
 
 
 
@@ -16,8 +22,10 @@ class Place(BaseModel):
     price = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    owner = relationship('users', backref='place', lazy=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    owner = relationship('User', back_populates='places', lazy=True)
+    reviews = relationship('Review', back_populates='place', lazy=True)
+    amenities = relationship('Amenity', secondary=place_amenities, back_populates='places', lazy=True)
 
     @validates("title")
     def validate_title(self, key, title):

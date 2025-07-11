@@ -3,6 +3,7 @@ from datetime import datetime
 from app.models.user import BaseModel
 from app import db
 from sqlalchemy.orm import relationship, validates
+from sqlalchemy import Table, Integer, String, Column, ForeignKey
 
 class Review(BaseModel):
     __tablename__ = 'reviews'
@@ -10,6 +11,11 @@ class Review(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+    place_id = db.Column(db.Integer, ForeignKey('places.id'), nullable=False)
+    place = relationship('Place', back_populates='reviews', lazy=True)
+    author_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
+    author = relationship('User', back_populates='rates', lazy=True)
+
 
     def to_dict(self):
         return {
