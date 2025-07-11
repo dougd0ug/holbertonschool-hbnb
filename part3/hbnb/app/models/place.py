@@ -75,7 +75,7 @@ class Place(BaseModel, Base):
             'latitude': self.latitude,
             'longitude': self.longitude,
             'owner_id': self.owner_id,
-            'amenities': self.amenities,
+            'amenities': [amenity.to_dict() for amenity in self.amenities],
             'created_at': self.created_at.isoformat() if hasattr(self, 'created_at') else None,
         }
 

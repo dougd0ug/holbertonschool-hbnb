@@ -8,6 +8,7 @@ from app.models.user import User, BaseModel
 from app.models.amenity import Amenity
 from app.models.review import Review
 from app.models.place import Place
+from app import db
 
 
 class HBnBFacade:
@@ -32,17 +33,71 @@ class HBnBFacade:
     def get_all_users(self):
         return self.user_repo.get_all()
     
-    def update_user(self, user_id, user_data):
-        user = self.user_repo.get(user_id)
+    def update_user(self, user_id, update_data):
+        return self.update(user_id, update_data)
+
+    def update(self, user_id, update_data):
+        user = self.get_user(user_id)
         if not user:
             return None
+
+        if "email" in update_data:
+            new_email = update_data["email"]
+            existing_user = self.user_repo.get_user_by_email(new_email)
+            if existing_user and existing_user.id != user.id:
+                raise ValueError("Email already registered to another user")
+
+        for key, value in update_data.items():
+            if hasattr(user, key):
+                if key == "password":
+                    user.hash_password(value)
+                else:
+                    setattr(user, key, value)
     
-        user.update(user_data)
-        return user
+    def get_amenity(self, amenity_id):
+        return self.amenity_repo.get(amenity_id)
 
     def create_place(self, place_data):
-        place = Place(**place_data)
+        price = place_data.get('price')
+        latitude = place_data.get('latitude')
+        longitude = place_data.get('longitude')
+
+        if price is None or price < 0:
+            raise ValueError("Price must be a non-negative float.")
+        if latitude is None or not (-90 <= latitude <= 90):
+            raise ValueError("Latitude must be between -90 and 90.")
+        if longitude is None or not (-180 <= longitude <= 180):
+            raise ValueError("Longitude must be between -180 and 180.")
+
+        owner_id = place_data.get('owner_id')
+        owner = self.user_repo.get(owner_id)
+        if not owner:
+            raise ValueError("The specified owner does not exist.")
+
+        amenities_ids = place_data.get('amenities', [])
+        amenities = []
+        for amenity_id in amenities_ids:
+            amenity = self.amenity_repo.get(amenity_id)
+            if not amenity:
+                raise ValueError(f"Amenity not found: {amenity_id}")
+            amenities.append(amenity)
+
+        place = Place(
+            title=place_data['title'],
+            price=price,
+            latitude=latitude,
+            longitude=longitude,
+            owner=owner,
+            description=place_data.get('description', "")
+        )
+        place.amenities = amenities
         self.place_repo.add(place)
+        return place
+
+    def get_place(self, place_id):
+        place = self.place_repository.get(place_id)
+        if not place:
+            raise ValueError("Place not found.")
         return place
 
     def get_place(self, place_id):
@@ -52,20 +107,36 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
-        place = self.place_repo.get(place_id)
-        if not place:
-            return None
-    
-        place.update(place_data)
-        return place
+        if 'price' in place_data and place_data['price'] < 0:
+            raise ValueError("Price must be a non-negative float.")
+        if 'latitude' in place_data and not (-90 <= place_data['latitude'] <= 90):
+            raise ValueError("Latitude must be between -90 and 90.")
+        if 'longitude' in place_data and not (-180 <= place_data['longitude'] <= 180):
+            raise ValueError("Longitude must be between -180 and 180.")
+
+        if 'owner_id' in place_data:
+            owner = self.user_repo.get(place_data['owner_id'])
+            if not owner:
+                raise ValueError("The specified owner does not exist.")
+            place_data['owner'] = owner
+            del place_data['owner_id']
+
+        if 'amenities' in place_data:
+            amenity_ids = place_data['amenities']
+            amenities = []
+            for amenity_id in amenity_ids:
+                amenity = self.amenity_repo.get(amenity_id)
+                if not amenity:
+                    raise ValueError(f"Amenity not found: {amenity_id}")
+                amenities.append(amenity)
+            place_data['amenities'] = amenities
+
+        return self.place_repo.update(place_id, place_data)
 
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
-
-    def get_amenity(self, amenity_id):
-        return self.amenity_repo.get(amenity_id)
 
     def get_amenity_by_name(self, amenity_name):
         return self.amenity_repo.get(amenity_name)
@@ -109,3 +180,8 @@ class HBnBFacade:
         review = self.review_repo.get(review_id)
         self.review_repo.delete(review_id)
         return review
+
+    def delete_user(self, user_id):
+        user = self.user_repo.get(user_id)
+        self.user_repo.delete(user_id)
+        return user

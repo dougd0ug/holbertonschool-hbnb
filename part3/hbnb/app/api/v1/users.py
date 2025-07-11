@@ -1,5 +1,5 @@
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 from app.services import facade
 from app.models.user import User
 
@@ -16,10 +16,12 @@ user_model = api.model('User', {
 @api.route('/')
 class UserList(Resource):
     @api.expect(user_model, validate=True)
+    @api.doc(security='Bearer')
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
     @api.response(400, 'Invalid input data')
     @api.response(404, 'User not found')
+    @jwt_required(optional=True)
     def post(self):
         """Register a new user"""
         user_data = api.payload
@@ -59,6 +61,7 @@ class UserList(Resource):
 
 @api.route('/<user_id>')
 class UserResource(Resource):
+    @api.doc(security='Bearer')
     @api.response(200, 'User details retrieved successfully')
     @api.response(404, 'User not found')
     def get(self, user_id):
@@ -80,19 +83,14 @@ class UserResource(Resource):
     @jwt_required()
     def put(self, user_id):
         """Updates user details"""
-        user_data = api.payload
-        current_user = get_jwt_identity()
-        user = user_data.get('id')
-
-        if user.id != current_user['id']:
-            return {'error': 'Unauthorized action.'}, 400
-
+        identity = get_jwt_identity()
+        claims = get_jwt()
+        if identity != user_id and not claims.get("is_admin"):
+            return {"error": "Not authorized"}, 403
         try:
-            updated_user = facade.update_user(user_id, user_data)
-        except Exception as e:
-            return {'error': str(e)}, 400
-
-        if not updated_user:
-            return {'error': 'User not found'}, 404
-
-        return updated_user.to_dict(), 200
+            user = facade.update_user(user_id, api.payload)
+        except ValueError as e:
+            return {"error": str(e)}, 400
+        if not user:
+            return {"error": "User not found"}, 404
+        return user.to_dict(), 200

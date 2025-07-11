@@ -30,15 +30,18 @@ class Review(BaseModel, Base):
         if 'text' in data:
             if not isinstance(data['text'], str) or not data['text']:
                 raise TypeError("The content of the review must be a string.")
-        if 'rating' in data:
-            if not isinstance(data['rating'], int) or data['rating'] < 1 or data['rating'] > 5:
-                raise ValueError("The rating must be between 1 and 5")
+        rating = data.get('rating')
+        if rating is None:
+            raise ValueError("Rating is required")
+        if not isinstance(rating, int):
+            raise ValueError("Rating must be an integer")
+        if rating < 1 or rating > 5:
+            raise ValueError("The rating must be between 1 and 5")
 
         super().update(data)
 
     @validates("rating")
     def validate_rating(self, key, rating):
-        if not rating or rating < 1 or self.rating > 5:
+        if rating is None or rating < 1 or rating > 5:
             raise ValueError("The rating must be between 1 and 5")
-        else:
-            return rating
+        return rating

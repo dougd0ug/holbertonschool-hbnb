@@ -20,6 +20,7 @@ amenity_model = api.model('Amenity', {
 
 @api.route('/users/<user_id>')
 class AdminUserResource(Resource):
+    @api.doc(security='Bearer Auth')
     @api.expect(user_admin_model, validate=True)
     @api.response(200, 'User updated successfully')
     @api.response(400, 'Invalid data or duplicate email')
@@ -27,7 +28,7 @@ class AdminUserResource(Resource):
     @api.response(403, 'Admin privileges required')
     @jwt_required()
     def put(self, user_id):
-        current_user = get_jwt()
+        current_user = get_jwt_identity()
         
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
@@ -45,13 +46,14 @@ class AdminUserResource(Resource):
             return {"error": "User not found"}, 404
         return user.to_dict(), 200
 
+    @api.doc(security='Bearer Auth')
     @api.response(200, 'User deleted successfully')
     @api.response(404, 'User not found')
     @api.response(403, 'Admin privileges required')
     @jwt_required()
     def delete(self, user_id):
         """Delete any user (admin only)"""
-        current_user = get_jwt()
+        current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
         user = facade.get_user(user_id)
@@ -63,17 +65,19 @@ class AdminUserResource(Resource):
 
 @api.route('/')
 class AdminUserList(Resource):
+    @api.doc(security='Bearer Auth')
     @api.response(200, 'List of users retrieved successfully')
     @api.response(403, 'Admin privileges required')
     @jwt_required()
     def get(self):
         """List all users (admin only)"""
-        current_user = get_jwt()
+        current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
         users = facade.get_all_users()
         return [u.to_dict() for u in users], 200
 
+    @api.doc(security='Bearer Auth')
     @api.expect(user_admin_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Email already registered')
@@ -81,7 +85,7 @@ class AdminUserList(Resource):
     @jwt_required()
     def post(self):
         """Create a user (admin only, can set is_admin)"""
-        current_user = get_jwt()
+        current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
         data = request.get_json()

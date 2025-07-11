@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
 from app.models.place import Place
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Place operations')
 
@@ -37,29 +37,14 @@ class PlaceList(Resource):
     @jwt_required()
     def post(self):
         """Register a new place"""
-        user_data = api.payload
+        data = api.payload
         current_user = get_jwt_identity()
-
-        owner = facade.get_user(current_user['id'])
-        if not owner:
-            return {'error': 'Owner does not exist'}, 400
-        
-        user_data['owner_id'] = owner.id 
-
-        if owner.id != current_user['id']:
-            return {'error': 'Unauthorized action'}, 403
-
-        amenity_ids = user_data['amenities']
-        for amenity_id in amenity_ids:
-            if not facade.get_amenity(amenity_id):
-                return {'error': 'Amenity not found'}, 400
-
+        data['owner_id'] = current_user['id']
         try:
-            new_place = facade.create_place(user_data)
-        except Exception as e:
+            place = facade.create_place(data)
+            return place.to_dict(), 201
+        except ValueError as e:
             return {'error': str(e)}, 400
-
-        return new_place.to_dict(), 201
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
@@ -70,6 +55,7 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
+    @api.doc(security='Bearer')
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
@@ -79,16 +65,7 @@ class PlaceResource(Resource):
         if not place:
             return {'error': 'Place does not exist'}, 404
 
-        return {
-            'id': place.id,
-            'title': place.title,
-            'description': place.description,
-            'price': place.price,
-            'latitude': place.latitude,
-            'longitude': place.longitude,
-            'owner_id': place.owner_id,
-            'amenities': place.amenities
-            }, 200
+        return place.to_dict(), 201
 
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
@@ -97,19 +74,20 @@ class PlaceResource(Resource):
     @jwt_required()
     def put(self, place_id):
         """Update a place's information"""
-        place = facade.get_place(place_id)
-        if not place:
-            return {'error': 'Place not found'}, 404
-
-        current_user = get_jwt_identity()
-
-        if place.owner_id != current_user['id']:
-            return {'error': 'You can only update your own places'}, 403
-
         data = api.payload
+        claims = get_jwt()
+        is_admin = claims.get('is_admin', False)
+        user_id = get_jwt_identity()
 
         try:
-            updated_place = facade.update_place(place_id, data)
-            return updated_place.to_dict(), 200
+            place = facade.get_place(place_id)
+
+            if not is_admin and str(place.owner_id) != str(user_id):
+                return {'error': 'Unauthorized action'}, 403
+
+            place = facade.update_place(place_id, data)
+            return {"message": "Place updated successfully"}, 200
+        except ValueError as e:
+            return {'error': str(e)}, 404
         except Exception as e:
             return {'error': str(e)}, 400
