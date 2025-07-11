@@ -56,6 +56,10 @@ class User(BaseModel):
         "email": self.email
         }
 
+    def validate(self):
+        if not self.first_name or len(self.first_name) > 50:
+            raise ValueError("First name must be a non-empty string with 50 characters max")
+    
     def update(self, data):
         if 'first_name' in data:
             if not isinstance(data['first_name'], str) or len(data['first_name']) > 50 or not data['first_name']:
