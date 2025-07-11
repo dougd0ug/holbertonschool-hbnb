@@ -3,13 +3,21 @@ from datetime import datetime
 from app.models.user import BaseModel
 from app import db
 from sqlalchemy.orm import relationship, validates
+from sqlalchemy import Column, Integer, String, ForeignKey
+from app.persistence.base import Base
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     __tablename__ = 'reviews'
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
+
+    place_id = Column(Integer, ForeignKey('places.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    place = relationship("Place", back_populates="reviews")
+    author = relationship("User", back_populates="reviews")
 
     def to_dict(self):
         return {

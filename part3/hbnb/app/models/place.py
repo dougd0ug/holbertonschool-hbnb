@@ -1,12 +1,21 @@
 import uuid
 from datetime import datetime
 from app.models.user import BaseModel
-from app import db, bcrypt
+from app import db
 from sqlalchemy.orm import relationship, validates
+from sqlalchemy import Column, String, Float, DECIMAL, ForeignKey, Text, Table
+from app.persistence.base import Base
 
 
+place_amenity_association = Table(
+    'place_amenity',
+    Base.metadata,
+    Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
+    Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
+)
 
-class Place(BaseModel):
+
+class Place(BaseModel, Base):
     __tablename__ = 'places'
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -15,6 +24,14 @@ class Place(BaseModel):
     price = db.Column(db.Integer, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+
+    owner_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    owner = relationship("User", back_populates="places")
+
+    reviews = relationship("Review", back_populates="place", cascade="all, delete-orphan")
+
+    amenities = relationship("Amenity", secondary=place_amenity_association, back_populates="places")       
 
     @validates("title")
     def validate_title(self, key, title):
@@ -83,4 +100,3 @@ class Place(BaseModel):
                 raise ValueError("Latitude must be between -180.0 and 180.0.")
 
         super().update(data)
-    
