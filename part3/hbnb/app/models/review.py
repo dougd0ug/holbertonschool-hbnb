@@ -7,9 +7,9 @@ from sqlalchemy.orm import relationship, validates
 class Review(BaseModel):
     __tablename__ = 'reviews'
 
-    id = id.Column(id.Integer, primary_key=True)
-    text = text.Column(text.String, nullable=False)
-    rating = rating.Column(rating.Integer, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
 
     def to_dict(self):
         return {
