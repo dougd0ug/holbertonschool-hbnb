@@ -2,48 +2,47 @@ import uuid
 from datetime import datetime
 from app.models.user import BaseModel
 from app import db, bcrypt
+from sqlalchemy.orm import relationship, validates
 
 
 
 class Place(BaseModel):
     __tablename__ = 'places'
 
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    latitude = 
-    longitude = 
-    owner_id = 
-    amenities = 
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
 
-        if title and len(title) <= 100 and isinstance(title, str):
-            self.title = title
-        else:
+    @validates("title")
+    def validate_title(self, key, title):
+        if not title or len(title) > 100:
             raise ValueError("Title must be a string with 100 characters maximum.")
-
-        if description and isinstance(description, str):
-            self.description = description
         else:
-            raise TypeError("Description must be a string.")
+            return title
 
-        if price and price > 0 and isinstance(price, (int, float)):
-            self.price = price
-        else:
+    @validates("price")
+    def validate_price(self, key, price):
+        if not price or price < 0:
             raise ValueError("Price must be over 0.")
-
-        if latitude and isinstance(latitude, (int, float)) and latitude >= -90.0 and latitude <= 90.0:
-            self.latitude = latitude
         else:
+            return price
+
+    @validates("latitude")
+    def validate_latitude(self, key, latitude):
+        if not latitude or latitude < -90.0 or latitude > 90.0:
             raise ValueError("Latitude must be between -90.0 and 90.0.")
-
-        if longitude and isinstance(longitude, (int, float)) and longitude >= -180.0 and longitude <= 180.0:
-            self.longitude = longitude
         else:
-            raise ValueError("Latitude must be between -180.0 and 180.0.")
+            return latitude
 
-        self.owner_id = owner_id
-        self.reviews = []
-        self.amenities = amenities
+    @validates("longitude")
+    def validate_longitude(self, key, longitude):
+        if not longitude or longitude < -180.0 or longitude > 180.0:
+            raise ValueError("Latitude must be between -180.0 and 180.0.")
+        else:
+            return longitude
 
     def add_review(self, review):
         """Add a review to the place."""
