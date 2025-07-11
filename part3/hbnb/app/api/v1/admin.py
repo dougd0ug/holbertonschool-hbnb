@@ -17,6 +17,7 @@ amenity_model = api.model('Amenity', {
     'name': fields.String(required=True, description='Name of the amenity')
 })
 
+
 @api.route('/users/<user_id>')
 class AdminUserResource(Resource):
     @api.expect(user_admin_model, validate=True)
@@ -59,7 +60,7 @@ class AdminUserResource(Resource):
         facade.delete_user(user_id)
         return {"message": "User deleted successfully"}, 200
 
-@api.doc(security='Bearer Auth')
+
 @api.route('/')
 class AdminUserList(Resource):
     @api.response(200, 'List of users retrieved successfully')
@@ -88,4 +89,3 @@ class AdminUserList(Resource):
             return {"error": "Email already registered"}, 400
         user = facade.create_user(data)
         return user.to_dict(), 201
-
