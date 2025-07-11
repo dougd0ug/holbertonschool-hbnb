@@ -3,6 +3,8 @@ from datetime import datetime
 import re
 from app import bcrypt, db
 from app.models.baseclasse import BaseModel
+from sqlalchemy.orm import relationship, validates
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -32,15 +34,26 @@ class User(db.Model):
             "is_admin": self.is_admin
         }
 
-    def validate(self):
-        if not self.first_name or len(self.first_name) > 50:
+    @validates("first_name")
+    def validate_first_name(self, key, first_name):
+        if not first_name or len(first_name) > 50:
             raise ValueError("First name must be a non-empty string with 50 characters max.")
-        if not self.last_name or len(self.last_name) > 50:
+        else:
+            return first_name
+    
+    @validates("last_name")
+    def validate_last_name(self, key, last_name):
+        if not last_name or len(last_name) > 50:
             raise ValueError("Last name must be a non-empty string with 50 characters max.")
-        if not self.valid_email(self.email):
+        else:
+            return last_name
+
+    @validates("email")
+    def validate_email(self, key, email):
+        if not self.valid_email(email):
             raise ValueError("Invalid email format.")
-        if not isinstance(self.is_admin, bool):
-            raise TypeError("is_admin must be a boolean.")
+        else:
+            return email
 
     @staticmethod
     def valid_email(email):
