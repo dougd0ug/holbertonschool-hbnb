@@ -1,24 +1,15 @@
 import uuid
 from datetime import datetime
 from app.models.user import BaseModel
-
+from app import db
+from sqlalchemy.orm import relationship, validates
 
 class Review(BaseModel):
-    def __init__(self, text, rating, place_id, user_id):
-        super().__init__()
-        if text and isinstance(text, str):
-            self.text = text
-        else:
-            raise TypeError("The content of the review must be a string.")
+    __tablename__ = 'reviews'
 
-        if isinstance(rating, int) and rating >= 1 and rating <= 5:
-            self.rating = rating
-        else:
-            raise ValueError("The rating must be between 1 and 5")
-
-        self.place_id = place_id
-        self.user_id = user_id
-
+    id = id.Column(id.Integer, primary_key=True)
+    text = text.Column(text.String, nullable=False)
+    rating = rating.Column(rating.Integer, nullable=False)
 
     def to_dict(self):
         return {
@@ -38,3 +29,10 @@ class Review(BaseModel):
                 raise ValueError("The rating must be between 1 and 5")
 
         super().update(data)
+
+    @validates("rating")
+    def validate_rating(self, key, rating):
+        if not rating or rating < 1 or self.rating > 5:
+            raise ValueError("The rating must be between 1 and 5")
+        else:
+            return rating
