@@ -1,92 +1,100 @@
-# HBNB
+# HBNB - Part 3: Persistence Layer & Database Integration
 
 ## Overview
 
-HBNB is a simplified clone of the Airbnb platform, designed as a learning project to demonstrate full-stack web development, RESTful API design, and object-oriented programming in Python. The project is structured to separate concerns between models, services, persistence, and API layers.
+This is Part 3 of the **HBNB project**, a simplified clone of Airbnb developed as part of the Holberton School curriculum. In this phase, the focus is on implementing a robust persistence layer — replacing in-memory storage with a relational database backend, and managing relationships between entities using object-relational mapping (ORM).
+
+## Key Objectives
+
+- Integrate a SQL-based database (e.g., SQLite or MySQL)
+- Define relationships between models using ORM (e.g., SQLAlchemy)
+- Separate repository and model logic from the business and API layers
+- Ensure persistence of all major entities: `User`, `Place`, `Amenity`, `Review`
 
 ## Features
 
-- User registration and profile management
-- Place listing with price, location, and description
-- Amenity management and association with places
-- User reviews and ratings for places
-- RESTful API endpoints for all major resources
+- Full schema design and class-to-table mapping
+- Model relationships:
+  - One-to-many (e.g. User → Place)
+  - Many-to-many (e.g. Place ↔ Amenity)
+- CRUD operations managed via repository classes
+- Decoupled architecture for scalability and unit testing
 
 ## Project Structure
 
 ```text
-part2/hbnb/
+part3/hbnb/
 ├── app/
-│   ├── api/           # API namespaces and routes
-│   ├── models/        # Data models (User, Place, Amenity, Review)
-│   ├── persistence/   # Repository and data storage logic
-│   ├── services/      # Business logic and facade
-├── config.py          # Configuration settings
-├── requirements.txt   # Python dependencies
-├── run.py             # Application entry point
-├── README.md
+│   ├── models/         # SQLAlchemy models and relationships
+│   ├── persistence/    # Repositories and session/database management
+│   ├── services/       # Business logic layer (optional)
+├── config.py           # Database config and environment settings
+├── requirements.txt    # Python dependencies
+├── run.py              # Application entry point
 ```
 
-## Getting Started
+## **Getting Started**
 
-### Prerequisites
+### **Prerequisites**
 
-- Python 3.8+
-- Flask==3.1.1
-- flask-restx==1.3.0
-- (Recommended) [virtualenv](https://virtualenv.pypa.io/en/latest/)
+   Python 3.8+
 
-### Installation
+   SQLAlchemy
 
-1. **Clone the repository:**
+   Flask (if using with the API from Part 2)
 
-   ```bash
-   git clone <repository-url>
-   cd part2/hbnb
-   ```
+   SQLite
 
-2. **Create and activate a virtual environment:**
+### **Installation**
 
-   ```bash
-   python3 -m venv mon_env
-   source mon_env/bin/activate
-   ```
+   Clone the repository:
 
-3. **Install dependencies:**
+```git
+git clone <your-repo-url>
+cd part3/hbnb
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Running the Application
+   Create and activate a virtual environment:
 
 ```bash
-python run.py
+python3 -m venv venv
+source venv/bin/activate
 ```
 
-The API will be available at `http://localhost:5000/`.
-
-### Running Tests
+   Install dependencies:
 
 ```bash
-python -m app.api.v1.test
+pip install -r requirements.txt
 ```
 
-## API Endpoints
+## **Configuration**
 
-- `POST /api/v1/users/` — Create a new user
-- `GET /api/v1/users/` — List all users
-- `GET /api/v1/users/<user_id>` — Get a specific user
-- `PUT /api/v1/users/<user_id>` — Update a user
-- `DELETE /api/v1/users/<user_id>` — Delete a user
+Edit config.py to point to your preferred database URI:
 
-Similar endpoints exist for places, amenities, and reviews.
+SQLALCHEMY_DATABASE_URI = "sqlite:///hbnb.db"
 
-## Conclusion
+### Database Initialization
 
-This project is for educational purposes.
-It has been made by Dorine Lemee et Ancelin Chevallier
+Run migrations or manually create the database schema using the models:
 
----
+python run.py  # or a dedicated setup script
 
-*Project by Holberton School students.*
+### **Model Overview**
+
+   User: can own multiple places and post reviews.(one-to-many)
+
+   Place: linked to a user, has many amenities and reviews.
+
+   Amenity: reusable across places (many-to-many).
+
+   Review: linked to both users and places.
+
+Authors
+
+Developed by:
+
+   Dorine Lemee
+
+   Ancelin Chevallier
+
+This educational project is part of the curriculum at Holberton School.
