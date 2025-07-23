@@ -31,6 +31,7 @@ place_model = api.model('Place', {
 
 @api.route('/')
 class PlaceList(Resource):
+    @api.doc(security='Bearer')
     @api.expect(place_model)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
@@ -66,7 +67,8 @@ class PlaceResource(Resource):
             return {'error': 'Place does not exist'}, 404
 
         return place.to_dict(), 201
-
+    
+    @api.doc(security='Bearer')
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')

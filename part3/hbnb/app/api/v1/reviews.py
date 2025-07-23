@@ -15,8 +15,8 @@ review_model = api.model('Review', {
 
 @api.route('/')
 class ReviewList(Resource):
-    @api.expect(review_model)
     @api.doc(security='Bearer')
+    @api.expect(review_model)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
     @jwt_required()
@@ -79,6 +79,8 @@ class ReviewResource(Resource):
 
         return review.to_dict(), 200
 
+
+    @api.doc(security='Bearer')
     @api.expect(review_model, validate=True)
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
