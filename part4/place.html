@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <header>
+            <div class="logo">
+                <img src="./images/logo.png" alt="hbnb logo">
+            </div>
+            <button class="login-button">
+                <p>Login</p>
+            </button>
+        <nav>
+            <a href="login.html" id="login-link">Login</a>
+            <a href="index.html" id="index-link">Home</a>
+        </nav>
+        </header>
+        <section id="place-details">
+            <!-- Place details will be populated dynamically -->
+            <div class="place-info">
+                <div>Host</div>
+                <div>Price</div>
+                <div>Description</div>
+                <div>Amenities</div>
+            </div>
+        </section>
+        <section id="reviews">
+            <!-- Reviews will be populated dynamically -->
+            <div class="review-card">
+                <p>Comment</p>
+                <p>Username</p>
+                <p>Rating</p>
+            </div>
+        </section>
+        <section id="add-review">
+            <h2>Add a Review</h2>
+            <form id="review-form">
+                <label for="review-text">Review:</label>
+                <textarea id="review-text" name="review-text" required></textarea>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+    <script src="scripts.js"></script>
+</body>
+</html>
