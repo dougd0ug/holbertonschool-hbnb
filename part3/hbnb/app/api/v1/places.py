@@ -29,7 +29,7 @@ place_model = api.model('Place', {
 })
 
 
-@api.route('/')
+@api.route('', '/')
 class PlaceList(Resource):
     @api.doc(security='Bearer')
     @api.expect(place_model)
