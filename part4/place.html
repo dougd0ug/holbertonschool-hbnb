@@ -21,21 +21,23 @@
         </section>
         <section id="reviews">
             <!-- Reviews will be populated dynamically -->
-            <div class="review-card">
-                <p>Comment</p>
-                <p>Username</p>
-                <p>Rating</p>
-            </div>
+            <div class="review-card"></div>
         </section>
-        <section id="add-review">
+        <form id="review-form">
             <h2>Add a Review</h2>
-            <form id="review-form">
-                <label for="review-text">Review:</label>
-                <textarea id="review-text" name="review-text" required></textarea>
-                
-                <button type="submit">Submit</button>
-            </form>
-        </section>
+            <label for="review">Your Review:</label>
+            <textarea id="review-text" name="review" required></textarea>
+            <label for="rating">Rating:</label>
+            <select id="review-rating" name="rating" required>
+                <!-- Options for rating -->
+                <option value = 1>1</option>
+                <option value = 2>2</option>
+                <option value = 3>3</option>
+                <option value = 4>4</option>
+                <option value = 5>5</option>
+            </select>
+            <button type="submit">Submit Review</button>
+        </form>
     </main>
     <script src="scripts.js"></script>
 </body>

@@ -12,9 +12,6 @@
             <div class="logo">
                 <img src="./images/logo.png" alt="hbnb logo">
             </div>
-            <button class="login-button">
-                <p>Login</p>
-            </button>
         <nav>
             <a href="login.html" id="login-link">Login</a>
             <a href="index.html" id="index-link">Home</a>
@@ -24,10 +21,15 @@
         <form id="review-form">
             <h2>Add a Review</h2>
             <label for="review">Your Review:</label>
-            <textarea id="review" name="review" required></textarea>
+            <textarea id="review-text" name="review" required></textarea>
             <label for="rating">Rating:</label>
-            <select id="rating" name="rating" required>
+            <select id="review-rating" name="rating" required>
                 <!-- Options for rating -->
+                <option value = 1>1</option>
+                <option value = 2>2</option>
+                <option value = 3>3</option>
+                <option value = 4>4</option>
+                <option value = 5>5</option>
             </select>
             <button type="submit">Submit Review</button>
         </form>

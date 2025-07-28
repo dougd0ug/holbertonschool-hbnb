@@ -66,7 +66,21 @@ class PlaceResource(Resource):
         if not place:
             return {'error': 'Place does not exist'}, 404
 
-        return place.to_dict(), 201
+        place_dict = place.to_dict()
+
+        place_dict['reviews'] = []
+        for review in place.reviews:
+            place_dict['reviews'].append({
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'user': {
+                    'id': review.user.id,
+                    'username': getattr(review.user, 'username', 'Anonymous')
+                }
+            })
+
+        return place_dict
     
     @api.doc(security='Bearer')
     @api.expect(place_model)
