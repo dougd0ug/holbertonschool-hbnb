@@ -4,12 +4,20 @@
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('logout-button').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.cookie = 'token=; Max-Age=0; path=/';
-    window.location.href = 'login.html';
-    });
+    const logoutBtn = document.getElementById('logout-button');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.cookie = 'token=; Max-Age=0; path=/';
+            window.location.href = 'login.html';
+        });
+    }
+
+    // Exemple pour loginLink et logoutButton dans checkAuthentication
+    checkAuthentication();
   });
+
+  // Login configuration
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
@@ -49,6 +57,8 @@ async function loginUser(email, password) {
     return response;
 }
 
+// Place by filter configuration
+
 function checkAuthentication() {
     const token = getCookie('token');
     const loginLink = document.getElementById('login-link');
@@ -69,7 +79,7 @@ function checkAuthentication() {
         loginLink.style.display = 'none';
         logoutButton.style.display = 'block';
         fetchPlaces(token);
-}
+    }
 }
 
 function getCookie(name) {
@@ -107,6 +117,7 @@ async function fetchPlaces(token) {
 
 function displayPlaces(places) {
     const placesList = document.getElementById('places-list');
+    if (!placesList) return;
     placesList.innerHTML = '';
 
     places.forEach(place => {
@@ -119,7 +130,13 @@ function displayPlaces(places) {
             <p>${place.description}</p>
             <p><strong>Price:</strong> $${place.price}</p>
             <p><strong>Location:</strong> ${place.location || 'Unknown'}</p>
+            <button class="view-details-btn">View Details</button>
         `;
+
+        placeCard.querySelector('.view-details-btn').addEventListener('click', () => {
+         // Redirige vers place.html avec l'id en query param
+        window.location.href = `place.html?id=${place.id}`;
+        });
 
         placesList.appendChild(placeCard);
     });
@@ -143,3 +160,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Place details
+
+function getPlaceIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id'); // Assure-toi que l'URL est comme place.html?id=xxxx
+}
+
+async function fetchPlaceDetails(token, placeId) {
+    try {
+        const response = await fetch(`http://localhost:5000/api/v1/places/${placeId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            displayPlaceDetails(data);
+        } else {
+            console.error('Failed to fetch place details:', response.status);
+        }
+    } catch (error) {
+        console.error('Error fetching place details:', error);
+    }
+}
+
+function displayPlaceDetails(place) {
+    const placeDetails = document.getElementById('place-details');
+    placeDetails.innerHTML = ''; // clear
+
+    const title = document.createElement('h2');
+    title.textContent = place.title;
+
+    const desc = document.createElement('p');
+    desc.textContent = place.description;
+
+    const price = document.createElement('p');
+    price.textContent = `Price: $${place.price}`;
+
+    const location = document.createElement('p');
+    location.textContent = `Location: (${place.latitude}, ${place.longitude})`;
+
+    // Optionally display amenities
+    const amenities = document.createElement('ul');
+    amenities.textContent = "Amenities:";
+    (place.amenities || []).forEach(a => {
+        const item = document.createElement('li');
+        item.textContent = a;
+        amenities.appendChild(item);
+    });
+
+    placeDetails.appendChild(title);
+    placeDetails.appendChild(desc);
+    placeDetails.appendChild(price);
+    placeDetails.appendChild(location);
+    placeDetails.appendChild(amenities);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const placeId = getPlaceIdFromURL();
+
+    if (placeId) {
+        checkAuthForPlaceDetails(placeId);  // page place.html
+    } else if (document.getElementById('places-list')) {
+        checkAuthentication(); // page index.html
+    }
+});
+
+
+function checkAuthForPlaceDetails(placeId) {
+    const token = getCookie('token');
+    const addReviewSection = document.getElementById('add-review');
+
+    if (!token) {
+        if (addReviewSection) addReviewSection.style.display = 'none';
+        fetchPlaceDetails(null, placeId);  // fetch même sans token
+    } else {
+        if (addReviewSection) addReviewSection.style.display = 'block';
+        fetchPlaceDetails(token, placeId);
+    }
+}

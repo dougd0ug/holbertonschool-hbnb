@@ -12,18 +12,20 @@
             <div class="logo">
                 <img src="./images/logo.png" alt="hbnb logo">
             </div>
-            <button class="login-button">
-                <p>Login</p>
-            </button>
         <nav>
-            <a href="login.html" id="login-link">Login</a>
+            <a href="login.html" id="login-link" style="display: none;">Login</a>
             <a href="index.html" id="index-link">Home</a>
+            <a href="#" id="logout-button" style="display: none;">Logout</a>
         </nav>
         </header>
         <section id="filter">
             <label for="price-filter">Max Price:</label>
             <select id="price-filter">
                 <!-- Options will be populated dynamically -->
+                <option value="All">All</option>
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
             </select>
         </section>
         <section id="places-list">
