@@ -247,29 +247,29 @@ function displayPlaceDetails(place) {
     }
 
     // reviews
-    if (place.reviews && place.reviews.length > 0) {
-        const reviewsSection = document.createElement('div');
-        reviewsSection.innerHTML = '<h3>Reviews</h3>';
+    const reviewContainer = document.getElementById('review-container');
+    if (reviewContainer) {
+        reviewContainer.innerHTML = ''; // on vide d’abord le contenu existant
 
-        place.reviews.forEach(review => {
-        const reviewDiv = document.createElement('div');
-        reviewDiv.classList.add('review');
+        if (place.reviews && place.reviews.length > 0) {
+            place.reviews.forEach(review => {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.classList.add('review');
 
-        reviewDiv.innerHTML = `
-        <p><strong>${review.username || review.user_id || 'Anonymous'}</strong></p>
-        <p>Rating: ${review.rating}</p>
-        <p>${review.text}</p>
-        <hr>
-        `;
+                reviewDiv.innerHTML = `
+                    <p><strong>${review.username || review.user_id || 'Anonymous'}</strong></p>
+                    <p>Rating: ${review.rating}</p>
+                    <p>${review.text}</p>
+                    <hr>
+                `;
 
-        reviewsSection.appendChild(reviewDiv);
-        });
-
-        placeDetails.appendChild(reviewsSection);
-    } else {
-        const noReviews = document.createElement('p');
-        noReviews.textContent = 'No reviews yet.';
-        placeDetails.appendChild(noReviews);
+                reviewContainer.appendChild(reviewDiv);
+            });
+        } else {
+            const noReviews = document.createElement('p');
+            noReviews.textContent = 'No reviews yet.';
+            reviewContainer.appendChild(noReviews);
+        }
     }
 }
 
