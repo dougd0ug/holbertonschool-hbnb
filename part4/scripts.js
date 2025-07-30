@@ -10,12 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const logoutBtn = document.getElementById('logout-button');
+    const loginLink = document.getElementById('login-link');
+    const token = getCookie('token');
+
     if (logoutBtn) {
+        if (token) {
+            logoutBtn.style.display = 'block';
+        } else {
+            logoutBtn.style.display = 'none';
+        }
+
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             document.cookie = 'token=; Max-Age=0; path=/';
             window.location.href = 'login.html';
         });
+    }
+
+    if (loginLink) {
+        if (token) {
+            loginLink.style.display = 'none';
+        } else {
+            loginLink.style.display = 'block';
+        }
     }
 });
 
@@ -65,15 +82,8 @@ async function loginUser(email, password) {
 
 function handleIndexPage() {
     const token = getCookie('token');
-    const loginLink = document.getElementById('login-link');
-    const logoutBtn = document.getElementById('logout-button');
 
-    if (!token) {
-        if (loginLink) loginLink.style.display = 'block';
-        if (logoutBtn) logoutBtn.style.display = 'none';
-    } else {
-        if (loginLink) loginLink.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'block';
+    if (token) {
         fetchPlaces(token);
     }
 
@@ -123,13 +133,22 @@ function displayPlaces(places) {
         const card = document.createElement('div');
         card.className = 'place-card';
         card.setAttribute('data-price', place.price);
+        
+        let amenitiesText = 'No amenities';
+        if (Array.isArray(place.amenities) && place.amenities.length > 0) {
+            const amenityNames = place.amenities.map(a => a.name);
+            amenitiesText = amenityNames.join(', ');
+        }
+
         card.innerHTML = `
             <h3>${place.title}</h3>
             <p>${place.description}</p>
             <p><strong>Price:</strong> $${place.price}</p>
             <p><strong>Location:</strong> ${place.location || 'Unknown'}</p>
+            <p><strong>Amenities:</strong> ${amenitiesText}</p>
             <button class="view-details-btn">View Details</button>
         `;
+
         card.querySelector('.view-details-btn').addEventListener('click', () => {
             window.location.href = `place.html?id=${place.id}`;
         });
@@ -208,42 +227,50 @@ async function fetchPlaceDetails(token, placeId) {
 
 
 function displayPlaceDetails(place) {
-  const placeDetails = document.getElementById('place-details');
-  placeDetails.innerHTML = ''; // clear
+    const placeDetails = document.getElementById('place-details');
+    placeDetails.innerHTML = '';
 
-  // Affichage des infos principales
-  placeDetails.innerHTML = `
+    placeDetails.innerHTML = `
     <h2>${place.title}</h2>
     <p>${place.description}</p>
     <p>Price: $${place.price}</p>
     <p>Location: (${place.latitude}, ${place.longitude})</p>
-  `;
+    `;
 
-  // Affichage des reviews (s'il y en a)
-  if (place.reviews && place.reviews.length > 0) {
-    const reviewsSection = document.createElement('div');
-    reviewsSection.innerHTML = '<h3>Reviews</h3>';
+    if (Array.isArray(place.amenities) && place.amenities.length > 0) {
+        const amenityNames = place.amenities.map(a => a.name);
+        const amenitiesText = amenityNames.join(', ');
 
-    place.reviews.forEach(review => {
-      const reviewDiv = document.createElement('div');
-      reviewDiv.classList.add('review');
+        const amenitiesSection = document.createElement('p');
+        amenitiesSection.innerHTML = `<strong>Amenities:</strong> ${amenitiesText}`;
+        placeDetails.appendChild(amenitiesSection);
+    }
 
-      reviewDiv.innerHTML = `
+    // reviews
+    if (place.reviews && place.reviews.length > 0) {
+        const reviewsSection = document.createElement('div');
+        reviewsSection.innerHTML = '<h3>Reviews</h3>';
+
+        place.reviews.forEach(review => {
+        const reviewDiv = document.createElement('div');
+        reviewDiv.classList.add('review');
+
+        reviewDiv.innerHTML = `
         <p><strong>${review.username || review.user_id || 'Anonymous'}</strong></p>
         <p>Rating: ${review.rating}</p>
         <p>${review.text}</p>
         <hr>
-      `;
+        `;
 
-      reviewsSection.appendChild(reviewDiv);
-    });
+        reviewsSection.appendChild(reviewDiv);
+        });
 
-    placeDetails.appendChild(reviewsSection);
-  } else {
-    const noReviews = document.createElement('p');
-    noReviews.textContent = 'No reviews yet.';
-    placeDetails.appendChild(noReviews);
-  }
+        placeDetails.appendChild(reviewsSection);
+    } else {
+        const noReviews = document.createElement('p');
+        noReviews.textContent = 'No reviews yet.';
+        placeDetails.appendChild(noReviews);
+    }
 }
 
 
