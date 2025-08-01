@@ -1,0 +1,242 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+    background: #ECE9E6;
+    background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);
+    background: linear-gradient(to right, #FFFFFF, #ECE9E6);
+    color: #333;
+    width: 100%;
+    font-family: 'Host Grotesk', sans-serif;
+}
+
+header {
+    color: #fff;
+    padding: 1rem;
+    background: #ffb0cc;
+    background: linear-gradient(73deg,rgba(255, 176, 204, 0.28) 0%, rgba(240, 213, 213, 0.55) 100%);
+    box-shadow: inset 0px -7px 8px -4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.head-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+}
+
+.nav-container {
+    display: flex;
+    gap: 15px;
+}
+
+nav a {
+    text-decoration: solid;
+    margin-left: 1rem;
+}
+
+.btn-head {
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    color: grey;
+}
+
+.btn-head:hover {
+    color: rgb(174, 141, 154);
+    text-decoration: none;
+    background-color: #ffffffc6;
+    border-radius: 30px;
+    display: block;
+}
+
+.place-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#filter {
+    text-align: center;
+}
+
+.place-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.place-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 1 250px;
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgb(216, 216, 216);
+    transition: transform .3s;
+    
+}
+
+.place-card:hover {
+    transform: scale(1.1);
+}
+
+.view-details-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 30px;
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.view-details-btn:hover {
+    background-color: rgb(210, 208, 208);
+}
+
+.review-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 1 250px;
+    margin: 20px;
+    padding: 20px 15px 15px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgb(216, 216, 216);
+    transition: transform .3s;
+}
+
+.place-list-p {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 1 250px;
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgb(216, 216, 216);
+    transition: transform .3s;
+}
+
+.review-title {
+    margin: 20px;
+    text-align: center;
+}
+.review-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+#review-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 15px;
+    margin: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgb(216, 216, 216);
+    height: auto;
+    width: 500px;
+}
+
+#review-text {
+    width: 400px;
+    height: 100px;
+}
+
+.btn-review {
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 30px;
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-review:hover {
+    background-color: rgb(210, 208, 208);
+}
+
+.login-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 15px;
+    margin: 100px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgb(216, 216, 216);
+    height: auto;
+    width: 300px;
+}
+
+#login-form input {
+    border-radius: 5px;
+    padding-left: 3px;
+}
+
+.login-btn {
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 30px;
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.login-btn:hover {
+    background-color: rgb(210, 208, 208);
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    color: grey;
+    padding: 1rem;
+    background: #ffb0cc;
+    background: linear-gradient(73deg,rgba(255, 176, 204, 0.28) 0%, rgba(240, 213, 213, 0.55) 100%);
+    box-shadow: inset 0px 8px 6px -5px rgba(0,0,0,0.1);
+    margin-top: auto;
+}

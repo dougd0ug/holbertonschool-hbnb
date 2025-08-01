@@ -29,7 +29,7 @@ place_model = api.model('Place', {
 })
 
 
-@api.route('/')
+@api.route('', '/')
 class PlaceList(Resource):
     @api.doc(security='Bearer')
     @api.expect(place_model)
@@ -66,7 +66,22 @@ class PlaceResource(Resource):
         if not place:
             return {'error': 'Place does not exist'}, 404
 
-        return place.to_dict(), 201
+        place_dict = place.to_dict()
+
+        place_dict['reviews'] = []
+        for review in place.reviews:
+            place_dict['reviews'].append({
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'user': {
+                    'id': review.user.id,
+                    'username': getattr(review.user, 'username', 'Anonymous')
+                }
+            })
+
+
+        return place_dict
     
     @api.doc(security='Bearer')
     @api.expect(place_model)
@@ -79,12 +94,12 @@ class PlaceResource(Resource):
         data = api.payload
         claims = get_jwt()
         is_admin = claims.get('is_admin', False)
-        user_id = get_jwt_identity()
+        user = get_jwt_identity()
 
         try:
             place = facade.get_place(place_id)
 
-            if not is_admin and str(place.owner_id) != str(user_id):
+            if not is_admin and str(place.owner_id) != str(user["id"]):
                 return {'error': 'Unauthorized action'}, 403
 
             place = facade.update_place(place_id, data)
