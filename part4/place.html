@@ -5,41 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Details</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <main>
-        <header>
+        <header class="head-container">
             <div class="logo">
-                <img src="./images/logo.png" alt="hbnb logo">
+                <a href="index.html"><img src="./images/logo.png" alt="hbnb logo"></a>
             </div>
-        <nav>
-            <a href="login.html" id="login-link" style="display: none;">Login</a>
-            <a href="index.html" id="index-link">Home</a>
-            <a href="#" id="logout-button" style="display: none;">Logout</a>
-        </nav>
+            <nav class="nav-container">
+                <a class="btn-head" href="login.html" id="login-link" style="display: none;">Login</a>
+                <a class="btn-head" href="index.html" id="index-link">Home</a>
+                <a class="btn-head" href="#" id="logout-button" style="display: none;">Logout</a>
+            </nav>
         </header>
-        <section id="place-details"></section>
-        <div id="place-amenities"></div>
-        <section id="reviews">
+        <div class="place-list-p">
+            <div id="place-details"></div>
+            <div id="place-amenities"></div>
+        </div>
+        <h2 class="review-title">Reviews</h2>
+        <div id="reviews">
             <div class="review-card" id="review-container"></div>
             <!-- Reviews will be populated dynamically -->
-        </section>
-        <form id="review-form">
-            <h2>Add a Review</h2>
-            <label for="review">Your Review:</label>
-            <textarea id="review-text" name="review" required></textarea>
-            <label for="rating">Rating:</label>
-            <select id="review-rating" name="rating" required>
-                <!-- Options for rating -->
-                <option value = 1>1</option>
-                <option value = 2>2</option>
-                <option value = 3>3</option>
-                <option value = 4>4</option>
-                <option value = 5>5</option>
-            </select>
-            <button type="submit">Submit Review</button>
-        </form>
+        </div>
+        <div class="review-form-container">
+            <form id="review-form">
+                <h2>Add a Review</h2>
+                <label for="review-text">Your Review:</label>
+                <textarea id="review-text" name="review" required></textarea>
+                <label for="review-rating">Rating:</label>
+                <select id="review-rating" name="rating" required>
+                    <!-- Options for rating -->
+                    <option value="">&nbsp;</option>
+                    <option value = 1>1</option>
+                    <option value = 2>2</option>
+                    <option value = 3>3</option>
+                    <option value = 4>4</option>
+                    <option value = 5>5</option>
+                </select>
+                <button type="submit" class="btn-review">Submit Review</button>
+            </form>
+        </div>
     </main>
+    <footer>
+        <p>All rights reserved. @dougdoug</p>
+    </footer>
     <script src="scripts.js"></script>
 </body>
 </html>

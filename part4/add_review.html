@@ -8,23 +8,25 @@
 </head>
 <body>
     <main>
-        <header>
+        <header class="head-container">
             <div class="logo">
-                <img src="./images/logo.png" alt="hbnb logo">
+                <a href="index.html"><img src="./images/logo.png" alt="hbnb logo"></a>
             </div>
-        <nav>
-            <a href="login.html" id="login-link">Login</a>
-            <a href="index.html" id="index-link">Home</a>
-        </nav>
+            <nav class="nav-container">
+                <a class="btn-head" href="login.html" id="login-link" style="display: none;">Login</a>
+                <a class="btn-head" href="index.html" id="index-link">Home</a>
+                <a class="btn-head" href="#" id="logout-button" style="display: none;">Logout</a>
+            </nav>
         </header>
         <!-- Add something to idfentify the place you're reviewing -->
         <form id="review-form">
             <h2>Add a Review</h2>
-            <label for="review">Your Review:</label>
+            <label for="review-text">Your Review:</label>
             <textarea id="review-text" name="review" required></textarea>
-            <label for="rating">Rating:</label>
+            <label for="review-rating">Rating:</label>
             <select id="review-rating" name="rating" required>
                 <!-- Options for rating -->
+                <option value="">&nbsp;</option>
                 <option value = 1>1</option>
                 <option value = 2>2</option>
                 <option value = 3>3</option>
@@ -34,6 +36,9 @@
             <button type="submit">Submit Review</button>
         </form>
     </main>
+    <footer>
+        <p>All rights reserved. @dougdoug</p>
+    </footer>
     <script src="scripts.js"></script>
 </body>
 </html>
