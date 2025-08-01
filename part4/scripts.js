@@ -1,3 +1,5 @@
+// main function to check wich page to handle, and handle logout button if the user is connected or not
+
 document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
@@ -36,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// function to get cookie of identification
+
 function getCookie(name) {
     const cookies = document.cookie.split(';');
     for (let cookie of cookies) {
@@ -46,6 +50,9 @@ function getCookie(name) {
     }
     return null;
 }
+
+// function to handle Login Page, check if the email and password submitted match an user, if yes, the user
+// is redirected on home page. To login you have to put your email and password
 
 function handleLoginPage() {
     const loginForm = document.getElementById('login-form');
@@ -71,6 +78,8 @@ function handleLoginPage() {
     }
 }
 
+// function to authentificate the user and use the method POST
+
 async function loginUser(email, password) {
     const response = await fetch('http://localhost:5000/api/v1/auth/login', {
         method: 'POST',
@@ -79,6 +88,8 @@ async function loginUser(email, password) {
     });
     return response;
 }
+
+// function to handle Index Page if the user is connected. It can fetch places and filter places by price
 
 function handleIndexPage() {
     const token = getCookie('token');
@@ -105,6 +116,8 @@ function handleIndexPage() {
     }
 }
 
+// function to fetch places from database
+
 async function fetchPlaces(token) {
     try {
         const response = await fetch('http://localhost:5000/api/v1/places', {
@@ -124,6 +137,8 @@ async function fetchPlaces(token) {
     }
 }
 
+// function to display places in the front, and go to the details place if you click on the button
+
 function displayPlaces(places) {
     const placesList = document.getElementById('places-list');
     if (!placesList) return;
@@ -142,9 +157,9 @@ function displayPlaces(places) {
 
         card.innerHTML = `
             <h3>${place.title}</h3>
-            <p>${place.description}</p>
+            
             <p><strong>Price:</strong> $${place.price}</p>
-            <p><strong>Location:</strong> ${place.location || 'Unknown'}</p>
+            
             <p><strong>Amenities:</strong> ${amenitiesText}</p>
             <button class="view-details-btn">View Details</button>
         `;
@@ -155,6 +170,8 @@ function displayPlaces(places) {
         placesList.appendChild(card);
     });
 }
+
+// function to handle Place Details on the page of the place. You have te review form to post a review too
 
 function handlePlaceDetailsPage() {
     const placeId = getPlaceIdFromURL();
@@ -194,10 +211,14 @@ function handlePlaceDetailsPage() {
     }
 }
 
+// function to pick place ID from the URL
+
 function getPlaceIdFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
 }
+
+// function to fetch Place Details from the database, is the token is authorize
 
 async function fetchPlaceDetails(token, placeId) {
   try {
@@ -225,6 +246,8 @@ async function fetchPlaceDetails(token, placeId) {
   }
 }
 
+// function to display PLace details on the Place page
+
 
 function displayPlaceDetails(place) {
     const placeDetails = document.getElementById('place-details');
@@ -249,7 +272,7 @@ function displayPlaceDetails(place) {
     // reviews
     const reviewContainer = document.getElementById('review-container');
     if (reviewContainer) {
-        reviewContainer.innerHTML = ''; // on vide d’abord le contenu existant
+        reviewContainer.innerHTML = '';
 
         if (place.reviews && place.reviews.length > 0) {
             place.reviews.forEach(review => {
@@ -260,7 +283,7 @@ function displayPlaceDetails(place) {
                     <p><strong>${review.username || review.user_id || 'Anonymous'}</strong></p>
                     <p>Rating: ${review.rating}</p>
                     <p>${review.text}</p>
-                    <hr>
+                    <br>
                 `;
 
                 reviewContainer.appendChild(reviewDiv);
@@ -273,6 +296,7 @@ function displayPlaceDetails(place) {
     }
 }
 
+// function which handle the Review form on the place page and the add_review page
 
 async function submitReview(token, placeId, reviewText, rating) {
     try {
